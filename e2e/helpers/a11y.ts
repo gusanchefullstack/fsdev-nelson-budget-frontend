@@ -6,7 +6,9 @@ export async function expectAccessible(page: Page) {
   const results = await new AxeBuilder({ page })
     .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"])
     .analyze();
-  const blocking = results.violations.filter((v) => v.impact === "serious" || v.impact === "critical");
+  const blocking = results.violations.filter(
+    (v) => v.impact === "serious" || v.impact === "critical",
+  );
   expect(blocking, blocking.map((v) => `${v.id}: ${v.help}`).join("\n")).toEqual([]);
 }
 

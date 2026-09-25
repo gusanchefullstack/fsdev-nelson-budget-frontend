@@ -1,0 +1,82 @@
+/*
+ * Nelson design tokens — the single place to change colors, fonts and radii (Principle IV).
+ * Palette: https://coolors.co/palette/ff6700-ebebeb-c0c0c0-3a6ea5-004e98
+ * Semantic names follow shadcn/ui so every component picks them up.
+ */
+:root {
+  /* Brand palette */
+  --palette-orange: #ff6700;
+  --palette-light: #ebebeb;
+  --palette-silver: #c0c0c0;
+  --palette-blue: #3a6ea5;
+  --palette-navy: #004e98;
+  --palette-ink: #0b1a2e;
+  --palette-white: #ffffff;
+
+  /* Typography */
+  --font-family-base: "Roboto Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --radius: 0.5rem;
+
+  /* Light theme (all text pairs ≥ 4.5:1) */
+  --background: var(--palette-white);
+  --foreground: var(--palette-ink);
+  --card: var(--palette-white);
+  --card-foreground: var(--palette-ink);
+  --popover: var(--palette-white);
+  --popover-foreground: var(--palette-ink);
+  --primary: var(--palette-navy);
+  --primary-foreground: var(--palette-white);
+  --secondary: var(--palette-light);
+  --secondary-foreground: var(--palette-ink);
+  --muted: var(--palette-light);
+  --muted-foreground: #4a4a4a;
+  --accent: var(--palette-orange);
+  --accent-foreground: var(--palette-ink);
+  --destructive: #b3261e;
+  --success: #1d6b3a;
+  --border: var(--palette-silver);
+  --input: #7a7a7a; /* ≥ 3:1 against the background for form controls */
+  --ring: var(--palette-navy); /* orange is only 2.9:1 on white */
+  --link: var(--palette-navy);
+  --chart-estimated: var(--palette-silver);
+  --chart-actual: var(--palette-navy);
+  --chart-highlight: var(--palette-orange);
+  --chart-1: var(--palette-navy);
+  --chart-2: var(--palette-orange);
+  --chart-3: var(--palette-blue);
+  --chart-4: var(--palette-silver);
+  --chart-5: var(--palette-ink);
+  --gradient-hero: linear-gradient(135deg, var(--palette-navy), var(--palette-blue));
+}
+
+.dark {
+  --background: var(--palette-ink);
+  --foreground: var(--palette-light);
+  --card: #10243f;
+  --card-foreground: var(--palette-light);
+  --popover: #10243f;
+  --popover-foreground: var(--palette-light);
+  --primary: var(--palette-orange);
+  --primary-foreground: var(--palette-ink);
+  --secondary: #1b3558;
+  --secondary-foreground: var(--palette-light);
+  --muted: #16304f;
+  --muted-foreground: var(--palette-silver);
+  --accent: var(--palette-blue);
+  --accent-foreground: var(--palette-white);
+  --destructive: #ff8a80;
+  --success: #7ddc9b;
+  --border: #35557d;
+  --input: #8aa1bf;
+  --ring: var(--palette-orange);
+  --link: #9cc3ec;
+  --chart-estimated: #5b7291;
+  --chart-actual: var(--palette-orange);
+  --chart-highlight: #9cc3ec;
+  --chart-1: var(--palette-orange);
+  --chart-2: #9cc3ec;
+  --chart-3: var(--palette-silver);
+  --chart-4: #5b7291;
+  --chart-5: var(--palette-light);
+  --gradient-hero: linear-gradient(135deg, #10243f, var(--palette-navy));
+}

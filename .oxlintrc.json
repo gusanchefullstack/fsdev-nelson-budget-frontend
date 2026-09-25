@@ -19,5 +19,16 @@
     "node_modules",
     "src/routeTree.gen.ts",
     "coverage"
+  ],
+  "overrides": [
+    {
+      "files": [
+        "src/routes/**",
+        "src/components/ui/**"
+      ],
+      "rules": {
+        "react/only-export-components": "off"
+      }
+    }
   ]
 }
