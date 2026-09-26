@@ -29,6 +29,16 @@
       "rules": {
         "react/only-export-components": "off"
       }
+    },
+    {
+      "files": [
+        "e2e/**"
+      ],
+      "rules": {
+        "react-hooks/rules-of-hooks": "off",
+        "react/rules-of-hooks": "off",
+        "no-empty-pattern": "off"
+      }
     }
   ]
 }
