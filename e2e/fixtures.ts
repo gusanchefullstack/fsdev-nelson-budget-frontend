@@ -120,3 +120,31 @@ export async function createParty(
   await expect(page.getByRole("dialog")).toHaveCount(0);
   await expect(page.getByRole("link", { name: p.name })).toBeVisible();
 }
+
+export async function recordTransaction(
+  page: Page,
+  t: {
+    budget: string;
+    item: string;
+    amount: string;
+    when: string;
+    account: string;
+    counterparty: string;
+    income?: boolean;
+  },
+) {
+  await page.goto("/transactions/new");
+  await page.getByLabel(field("Budget")).selectOption({ label: t.budget });
+  await page.getByLabel(field("Budget item")).selectOption({ label: t.item });
+  await page.getByLabel(/^Amount/).fill(t.amount);
+  await page.getByLabel(field("Date and time")).fill(t.when);
+  const accountLabel = t.income ? "To (account)" : "From (account)";
+  const partyLabel = t.income ? "From (payor)" : "To (vendor)";
+  await page
+    .getByLabel(field(accountLabel.replace(/[()]/g, "\\$&")))
+    .selectOption({ label: t.account });
+  await page
+    .getByLabel(field(partyLabel.replace(/[()]/g, "\\$&")))
+    .selectOption({ label: t.counterparty });
+  await page.getByRole("button", { name: "Record transaction" }).click();
+}

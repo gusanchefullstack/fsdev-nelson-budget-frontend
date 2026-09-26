@@ -21,6 +21,9 @@ import { Route as AuthedAccountsIdRouteImport } from './routes/_authed/accounts/
 import { Route as AuthedBudgetsIndexRouteImport } from './routes/_authed/budgets/index'
 import { Route as AuthedPayorsIndexRouteImport } from './routes/_authed/payors/index'
 import { Route as AuthedPayorsIdRouteImport } from './routes/_authed/payors/$id'
+import { Route as AuthedTransactionsIndexRouteImport } from './routes/_authed/transactions/index'
+import { Route as AuthedTransactionsIdRouteImport } from './routes/_authed/transactions/$id'
+import { Route as AuthedTransactionsNewRouteImport } from './routes/_authed/transactions/new'
 import { Route as AuthedVendorsIndexRouteImport } from './routes/_authed/vendors/index'
 import { Route as AuthedVendorsIdRouteImport } from './routes/_authed/vendors/$id'
 import { Route as AuthedBudgetsBudgetIdIndexRouteImport } from './routes/_authed/budgets/$budgetId/index'
@@ -87,6 +90,21 @@ const AuthedPayorsIdRoute = AuthedPayorsIdRouteImport.update({
   path: '/payors/$id',
   getParentRoute: () => AuthedRoute,
 } as any)
+const AuthedTransactionsIndexRoute = AuthedTransactionsIndexRouteImport.update({
+  id: '/transactions/',
+  path: '/transactions/',
+  getParentRoute: () => AuthedRoute,
+} as any)
+const AuthedTransactionsIdRoute = AuthedTransactionsIdRouteImport.update({
+  id: '/transactions/$id',
+  path: '/transactions/$id',
+  getParentRoute: () => AuthedRoute,
+} as any)
+const AuthedTransactionsNewRoute = AuthedTransactionsNewRouteImport.update({
+  id: '/transactions/new',
+  path: '/transactions/new',
+  getParentRoute: () => AuthedRoute,
+} as any)
 const AuthedVendorsIndexRoute = AuthedVendorsIndexRouteImport.update({
   id: '/vendors/',
   path: '/vendors/',
@@ -129,10 +147,13 @@ export interface FileRoutesByFullPath {
   '/profile': typeof AuthedProfileRoute
   '/accounts/$id': typeof AuthedAccountsIdRoute
   '/payors/$id': typeof AuthedPayorsIdRoute
+  '/transactions/$id': typeof AuthedTransactionsIdRoute
+  '/transactions/new': typeof AuthedTransactionsNewRoute
   '/vendors/$id': typeof AuthedVendorsIdRoute
   '/accounts/': typeof AuthedAccountsIndexRoute
   '/budgets/': typeof AuthedBudgetsIndexRoute
   '/payors/': typeof AuthedPayorsIndexRoute
+  '/transactions/': typeof AuthedTransactionsIndexRoute
   '/vendors/': typeof AuthedVendorsIndexRoute
   '/budgets/new/lite': typeof AuthedBudgetsNewLiteRoute
   '/budgets/$budgetId/': typeof AuthedBudgetsBudgetIdIndexRoute
@@ -148,10 +169,13 @@ export interface FileRoutesByTo {
   '/': typeof AuthedIndexRoute
   '/accounts/$id': typeof AuthedAccountsIdRoute
   '/payors/$id': typeof AuthedPayorsIdRoute
+  '/transactions/$id': typeof AuthedTransactionsIdRoute
+  '/transactions/new': typeof AuthedTransactionsNewRoute
   '/vendors/$id': typeof AuthedVendorsIdRoute
   '/accounts': typeof AuthedAccountsIndexRoute
   '/budgets': typeof AuthedBudgetsIndexRoute
   '/payors': typeof AuthedPayorsIndexRoute
+  '/transactions': typeof AuthedTransactionsIndexRoute
   '/vendors': typeof AuthedVendorsIndexRoute
   '/budgets/new/lite': typeof AuthedBudgetsNewLiteRoute
   '/budgets/$budgetId': typeof AuthedBudgetsBudgetIdIndexRoute
@@ -169,10 +193,13 @@ export interface FileRoutesById {
   '/_authed/': typeof AuthedIndexRoute
   '/_authed/accounts/$id': typeof AuthedAccountsIdRoute
   '/_authed/payors/$id': typeof AuthedPayorsIdRoute
+  '/_authed/transactions/$id': typeof AuthedTransactionsIdRoute
+  '/_authed/transactions/new': typeof AuthedTransactionsNewRoute
   '/_authed/vendors/$id': typeof AuthedVendorsIdRoute
   '/_authed/accounts/': typeof AuthedAccountsIndexRoute
   '/_authed/budgets/': typeof AuthedBudgetsIndexRoute
   '/_authed/payors/': typeof AuthedPayorsIndexRoute
+  '/_authed/transactions/': typeof AuthedTransactionsIndexRoute
   '/_authed/vendors/': typeof AuthedVendorsIndexRoute
   '/_authed/budgets/new/lite': typeof AuthedBudgetsNewLiteRoute
   '/_authed/budgets/$budgetId/': typeof AuthedBudgetsBudgetIdIndexRoute
@@ -190,10 +217,13 @@ export interface FileRouteTypes {
     | '/profile'
     | '/accounts/$id'
     | '/payors/$id'
+    | '/transactions/$id'
+    | '/transactions/new'
     | '/vendors/$id'
     | '/accounts/'
     | '/budgets/'
     | '/payors/'
+    | '/transactions/'
     | '/vendors/'
     | '/budgets/new/lite'
     | '/budgets/$budgetId/'
@@ -209,10 +239,13 @@ export interface FileRouteTypes {
     | '/'
     | '/accounts/$id'
     | '/payors/$id'
+    | '/transactions/$id'
+    | '/transactions/new'
     | '/vendors/$id'
     | '/accounts'
     | '/budgets'
     | '/payors'
+    | '/transactions'
     | '/vendors'
     | '/budgets/new/lite'
     | '/budgets/$budgetId'
@@ -229,10 +262,13 @@ export interface FileRouteTypes {
     | '/_authed/'
     | '/_authed/accounts/$id'
     | '/_authed/payors/$id'
+    | '/_authed/transactions/$id'
+    | '/_authed/transactions/new'
     | '/_authed/vendors/$id'
     | '/_authed/accounts/'
     | '/_authed/budgets/'
     | '/_authed/payors/'
+    | '/_authed/transactions/'
     | '/_authed/vendors/'
     | '/_authed/budgets/new/lite'
     | '/_authed/budgets/$budgetId/'
@@ -334,6 +370,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthedPayorsIdRouteImport
       parentRoute: typeof AuthedRoute
     }
+    '/_authed/transactions/': {
+      id: '/_authed/transactions/'
+      path: '/transactions'
+      fullPath: '/transactions/'
+      preLoaderRoute: typeof AuthedTransactionsIndexRouteImport
+      parentRoute: typeof AuthedRoute
+    }
+    '/_authed/transactions/$id': {
+      id: '/_authed/transactions/$id'
+      path: '/transactions/$id'
+      fullPath: '/transactions/$id'
+      preLoaderRoute: typeof AuthedTransactionsIdRouteImport
+      parentRoute: typeof AuthedRoute
+    }
+    '/_authed/transactions/new': {
+      id: '/_authed/transactions/new'
+      path: '/transactions/new'
+      fullPath: '/transactions/new'
+      preLoaderRoute: typeof AuthedTransactionsNewRouteImport
+      parentRoute: typeof AuthedRoute
+    }
     '/_authed/vendors/': {
       id: '/_authed/vendors/'
       path: '/vendors'
@@ -384,10 +441,13 @@ interface AuthedRouteChildren {
   AuthedIndexRoute: typeof AuthedIndexRoute
   AuthedAccountsIdRoute: typeof AuthedAccountsIdRoute
   AuthedPayorsIdRoute: typeof AuthedPayorsIdRoute
+  AuthedTransactionsIdRoute: typeof AuthedTransactionsIdRoute
+  AuthedTransactionsNewRoute: typeof AuthedTransactionsNewRoute
   AuthedVendorsIdRoute: typeof AuthedVendorsIdRoute
   AuthedAccountsIndexRoute: typeof AuthedAccountsIndexRoute
   AuthedBudgetsIndexRoute: typeof AuthedBudgetsIndexRoute
   AuthedPayorsIndexRoute: typeof AuthedPayorsIndexRoute
+  AuthedTransactionsIndexRoute: typeof AuthedTransactionsIndexRoute
   AuthedVendorsIndexRoute: typeof AuthedVendorsIndexRoute
   AuthedBudgetsNewLiteRoute: typeof AuthedBudgetsNewLiteRoute
   AuthedBudgetsBudgetIdIndexRoute: typeof AuthedBudgetsBudgetIdIndexRoute
@@ -400,10 +460,13 @@ const AuthedRouteChildren: AuthedRouteChildren = {
   AuthedIndexRoute: AuthedIndexRoute,
   AuthedAccountsIdRoute: AuthedAccountsIdRoute,
   AuthedPayorsIdRoute: AuthedPayorsIdRoute,
+  AuthedTransactionsIdRoute: AuthedTransactionsIdRoute,
+  AuthedTransactionsNewRoute: AuthedTransactionsNewRoute,
   AuthedVendorsIdRoute: AuthedVendorsIdRoute,
   AuthedAccountsIndexRoute: AuthedAccountsIndexRoute,
   AuthedBudgetsIndexRoute: AuthedBudgetsIndexRoute,
   AuthedPayorsIndexRoute: AuthedPayorsIndexRoute,
+  AuthedTransactionsIndexRoute: AuthedTransactionsIndexRoute,
   AuthedVendorsIndexRoute: AuthedVendorsIndexRoute,
   AuthedBudgetsNewLiteRoute: AuthedBudgetsNewLiteRoute,
   AuthedBudgetsBudgetIdIndexRoute: AuthedBudgetsBudgetIdIndexRoute,
