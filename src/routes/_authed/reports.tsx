@@ -102,16 +102,28 @@ function Reports() {
             onValueChange={(tab) => set({ tab: tab as (typeof TABS)[number] })}
           >
             <TabsList className="grid h-auto w-full grid-cols-2 sm:flex sm:w-fit">
-              <TabsTrigger value="execution" className="h-auto py-1.5 whitespace-normal">
+              <TabsTrigger
+                value="execution"
+                className="h-auto py-1.5 whitespace-normal sm:whitespace-nowrap"
+              >
                 Execution
               </TabsTrigger>
-              <TabsTrigger value="entities" className="h-auto py-1.5 whitespace-normal">
+              <TabsTrigger
+                value="entities"
+                className="h-auto py-1.5 whitespace-normal sm:whitespace-nowrap"
+              >
                 By account, payor, vendor
               </TabsTrigger>
-              <TabsTrigger value="top" className="h-auto py-1.5 whitespace-normal">
+              <TabsTrigger
+                value="top"
+                className="h-auto py-1.5 whitespace-normal sm:whitespace-nowrap"
+              >
                 Top N
               </TabsTrigger>
-              <TabsTrigger value="suggestions" className="h-auto py-1.5 whitespace-normal">
+              <TabsTrigger
+                value="suggestions"
+                className="h-auto py-1.5 whitespace-normal sm:whitespace-nowrap"
+              >
                 Suggestions
               </TabsTrigger>
             </TabsList>
