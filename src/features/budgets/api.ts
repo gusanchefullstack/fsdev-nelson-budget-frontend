@@ -1,6 +1,6 @@
 import { queryOptions, useMutation, useQueryClient } from "@tanstack/react-query";
 import { api, type One } from "@/lib/api";
-import type { Item } from "@/features/items/api";
+import type { Item, ItemInput } from "@/features/items/api";
 
 export type Currency = "USD" | "COP";
 export type CategoryType = "INCOME" | "EXPENSE";
@@ -73,11 +73,20 @@ export function useInvalidateBudgetData() {
     ]);
 }
 
+export type NestedBudgetInput = BudgetInput & {
+  categories?: {
+    type: CategoryType;
+    name: string;
+    description: string | null;
+    items: ItemInput[];
+  }[];
+};
+
+/** Lite sends basic info; Guided and Complete send the whole tree (FR-016). */
 export function useCreateBudget() {
   const invalidate = useInvalidateBudgetData();
   return useMutation({
-    mutationFn: (body: BudgetInput) =>
-      api<One<Budget>>("/budgets", { method: "POST", body }).then((r) => r.data),
+    mutationFn: (body: NestedBudgetInput) => api<One<Budget>>("/budgets", { method: "POST", body }),
     onSuccess: () => invalidate(),
   });
 }

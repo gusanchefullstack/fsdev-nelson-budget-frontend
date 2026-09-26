@@ -29,6 +29,7 @@ import { Route as AuthedVendorsIndexRouteImport } from './routes/_authed/vendors
 import { Route as AuthedVendorsIdRouteImport } from './routes/_authed/vendors/$id'
 import { Route as AuthedBudgetsBudgetIdIndexRouteImport } from './routes/_authed/budgets/$budgetId/index'
 import { Route as AuthedBudgetsNewIndexRouteImport } from './routes/_authed/budgets/new/index'
+import { Route as AuthedBudgetsNewGuidedRouteImport } from './routes/_authed/budgets/new/guided'
 import { Route as AuthedBudgetsNewLiteRouteImport } from './routes/_authed/budgets/new/lite'
 import { Route as AuthedBudgetsBudgetIdItemsItemIdRouteImport } from './routes/_authed/budgets/$budgetId/items/$itemId'
 
@@ -132,6 +133,11 @@ const AuthedBudgetsNewIndexRoute = AuthedBudgetsNewIndexRouteImport.update({
   path: '/budgets/new/',
   getParentRoute: () => AuthedRoute,
 } as any)
+const AuthedBudgetsNewGuidedRoute = AuthedBudgetsNewGuidedRouteImport.update({
+  id: '/budgets/new/guided',
+  path: '/budgets/new/guided',
+  getParentRoute: () => AuthedRoute,
+} as any)
 const AuthedBudgetsNewLiteRoute = AuthedBudgetsNewLiteRouteImport.update({
   id: '/budgets/new/lite',
   path: '/budgets/new/lite',
@@ -162,6 +168,7 @@ export interface FileRoutesByFullPath {
   '/payors/': typeof AuthedPayorsIndexRoute
   '/transactions/': typeof AuthedTransactionsIndexRoute
   '/vendors/': typeof AuthedVendorsIndexRoute
+  '/budgets/new/guided': typeof AuthedBudgetsNewGuidedRoute
   '/budgets/new/lite': typeof AuthedBudgetsNewLiteRoute
   '/budgets/$budgetId/': typeof AuthedBudgetsBudgetIdIndexRoute
   '/budgets/new/': typeof AuthedBudgetsNewIndexRoute
@@ -185,6 +192,7 @@ export interface FileRoutesByTo {
   '/payors': typeof AuthedPayorsIndexRoute
   '/transactions': typeof AuthedTransactionsIndexRoute
   '/vendors': typeof AuthedVendorsIndexRoute
+  '/budgets/new/guided': typeof AuthedBudgetsNewGuidedRoute
   '/budgets/new/lite': typeof AuthedBudgetsNewLiteRoute
   '/budgets/$budgetId': typeof AuthedBudgetsBudgetIdIndexRoute
   '/budgets/new': typeof AuthedBudgetsNewIndexRoute
@@ -210,6 +218,7 @@ export interface FileRoutesById {
   '/_authed/payors/': typeof AuthedPayorsIndexRoute
   '/_authed/transactions/': typeof AuthedTransactionsIndexRoute
   '/_authed/vendors/': typeof AuthedVendorsIndexRoute
+  '/_authed/budgets/new/guided': typeof AuthedBudgetsNewGuidedRoute
   '/_authed/budgets/new/lite': typeof AuthedBudgetsNewLiteRoute
   '/_authed/budgets/$budgetId/': typeof AuthedBudgetsBudgetIdIndexRoute
   '/_authed/budgets/new/': typeof AuthedBudgetsNewIndexRoute
@@ -235,6 +244,7 @@ export interface FileRouteTypes {
     | '/payors/'
     | '/transactions/'
     | '/vendors/'
+    | '/budgets/new/guided'
     | '/budgets/new/lite'
     | '/budgets/$budgetId/'
     | '/budgets/new/'
@@ -258,6 +268,7 @@ export interface FileRouteTypes {
     | '/payors'
     | '/transactions'
     | '/vendors'
+    | '/budgets/new/guided'
     | '/budgets/new/lite'
     | '/budgets/$budgetId'
     | '/budgets/new'
@@ -282,6 +293,7 @@ export interface FileRouteTypes {
     | '/_authed/payors/'
     | '/_authed/transactions/'
     | '/_authed/vendors/'
+    | '/_authed/budgets/new/guided'
     | '/_authed/budgets/new/lite'
     | '/_authed/budgets/$budgetId/'
     | '/_authed/budgets/new/'
@@ -438,6 +450,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthedBudgetsNewIndexRouteImport
       parentRoute: typeof AuthedRoute
     }
+    '/_authed/budgets/new/guided': {
+      id: '/_authed/budgets/new/guided'
+      path: '/budgets/new/guided'
+      fullPath: '/budgets/new/guided'
+      preLoaderRoute: typeof AuthedBudgetsNewGuidedRouteImport
+      parentRoute: typeof AuthedRoute
+    }
     '/_authed/budgets/new/lite': {
       id: '/_authed/budgets/new/lite'
       path: '/budgets/new/lite'
@@ -469,6 +488,7 @@ interface AuthedRouteChildren {
   AuthedPayorsIndexRoute: typeof AuthedPayorsIndexRoute
   AuthedTransactionsIndexRoute: typeof AuthedTransactionsIndexRoute
   AuthedVendorsIndexRoute: typeof AuthedVendorsIndexRoute
+  AuthedBudgetsNewGuidedRoute: typeof AuthedBudgetsNewGuidedRoute
   AuthedBudgetsNewLiteRoute: typeof AuthedBudgetsNewLiteRoute
   AuthedBudgetsBudgetIdIndexRoute: typeof AuthedBudgetsBudgetIdIndexRoute
   AuthedBudgetsNewIndexRoute: typeof AuthedBudgetsNewIndexRoute
@@ -489,6 +509,7 @@ const AuthedRouteChildren: AuthedRouteChildren = {
   AuthedPayorsIndexRoute: AuthedPayorsIndexRoute,
   AuthedTransactionsIndexRoute: AuthedTransactionsIndexRoute,
   AuthedVendorsIndexRoute: AuthedVendorsIndexRoute,
+  AuthedBudgetsNewGuidedRoute: AuthedBudgetsNewGuidedRoute,
   AuthedBudgetsNewLiteRoute: AuthedBudgetsNewLiteRoute,
   AuthedBudgetsBudgetIdIndexRoute: AuthedBudgetsBudgetIdIndexRoute,
   AuthedBudgetsNewIndexRoute: AuthedBudgetsNewIndexRoute,

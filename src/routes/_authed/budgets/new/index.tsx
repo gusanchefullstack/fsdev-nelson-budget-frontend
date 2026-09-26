@@ -3,12 +3,17 @@ import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/ca
 
 export const Route = createFileRoute("/_authed/budgets/new/")({ component: NewBudget });
 
-// FR-016 — creation modes; Guided and Complete are added with their user stories.
+// FR-016 — creation modes
 const MODES = [
   {
     to: "/budgets/new/lite",
     title: "Lite",
     text: "Start with the basics (name, currency, dates) and add categories and items later.",
+  },
+  {
+    to: "/budgets/new/guided",
+    title: "Guided",
+    text: "Step by step: basic info, then income and expense categories and items, then review.",
   },
 ] as const;
 

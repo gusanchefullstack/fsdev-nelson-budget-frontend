@@ -19,7 +19,7 @@ function LiteBudget() {
         pending={create.isPending}
         onSubmit={(data, setServerErrors) =>
           create.mutate(data, {
-            onSuccess: (b) => {
+            onSuccess: ({ data: b }) => {
               toast.success("Budget created.");
               void navigate({ to: "/budgets/$budgetId", params: { budgetId: b.id } });
             },
