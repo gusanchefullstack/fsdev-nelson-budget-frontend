@@ -12,7 +12,7 @@ export default defineConfig(({ mode }) => {
       react(),
       tailwindcss(),
     ],
-    resolve: { alias: { "@": path.resolve(__dirname, "./src") } },
+    resolve: { alias: { "@": path.resolve(import.meta.dirname, "./src") } },
     // Pre-bundle lazily loaded route deps so the dev server never reloads mid-session.
     optimizeDeps: { include: ["@dnd-kit/core", "@stepperize/react", "d3"] },
     // Same-origin API in dev, mirroring the Vercel rewrite in production

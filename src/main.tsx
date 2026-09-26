@@ -22,6 +22,17 @@ const queryClient = new QueryClient({
 
 const router = createRouter({ routeTree, context: { queryClient }, defaultPreload: "intent" });
 
+// Move focus to the new page's main content so keyboard and screen-reader users land there.
+// The first page load keeps the browser default so Tab reaches "Skip to content" first.
+let firstLoad = true;
+router.subscribe("onResolved", ({ pathChanged }) => {
+  if (firstLoad) {
+    firstLoad = false;
+    return;
+  }
+  if (pathChanged) document.getElementById("main")?.focus({ preventScroll: true });
+});
+
 declare module "@tanstack/react-router" {
   interface Register {
     router: typeof router;
