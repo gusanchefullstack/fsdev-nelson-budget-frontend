@@ -20,6 +20,7 @@ export const Route = createFileRoute("/_authed/")({
 function Dashboard() {
   const { user } = Route.useRouteContext();
   const { data, isPending, error, refetch } = useQuery(dashboardQuery);
+  const budgetNames = new Map(data?.budgets.map((b) => [b.id, b.name]));
   return (
     <section aria-labelledby="dashboard-title" className="grid gap-8">
       <div className="flex flex-wrap items-center justify-between gap-3">
@@ -150,6 +151,10 @@ function Dashboard() {
                             : g.messages[0]}
                         </Link>
                       </span>
+                      {/* FR-044: which budget the alert belongs to */}
+                      <span className="text-sm text-muted-foreground">
+                        {budgetNames.get(g.budgetId) ?? "Budget"}
+                      </span>
                       {g.type === "MISSED" && g.messages.length > 1 && (
                         <details>
                           <summary className="cursor-pointer text-sm text-muted-foreground">
@@ -193,6 +198,7 @@ function Dashboard() {
                     ),
                   },
                   { key: "item", header: "Item", cell: (t) => t.itemName },
+                  { key: "budget", header: "Budget", cell: (t) => t.budgetName },
                   {
                     key: "amount",
                     header: "Amount",

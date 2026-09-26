@@ -38,6 +38,7 @@ test("dashboard alerts and reports match hand calculation (scenario 14)", async 
   await page.goto("/");
   await expect(page.getByRole("heading", { name: "Alerts" })).toBeVisible();
   await expect(page.getByText("Rent: 11 past periods with no transaction recorded")).toBeVisible();
+  await expect(page.getByRole("listitem").filter({ hasText: "Rent: 11 past periods" })).toContainText("2025");
   await expect(page.getByText("Net so far")).toBeVisible();
   await expect(
     page.getByRole("img", { name: /expenses USD\s5,000\.00 of USD\s60,000\.00 estimated/ }),
@@ -52,6 +53,11 @@ test("dashboard alerts and reports match hand calculation (scenario 14)", async 
   await expect(rentRow).toContainText("USD 60,000.00");
   await expect(rentRow).toContainText("USD 5,000.00");
   await expect(rentRow).toContainText("8%");
+  const housingRow = page
+    .getByRole("region", { name: "Expenses by category" })
+    .getByRole("row", { name: /Housing/ });
+  await expect(housingRow).toContainText("USD 60,000.00");
+  await expect(housingRow).toContainText("USD 5,000.00");
   await expectAccessible(page);
   await expectNoHorizontalScroll(page);
 

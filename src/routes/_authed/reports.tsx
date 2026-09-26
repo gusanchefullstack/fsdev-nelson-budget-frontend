@@ -217,6 +217,28 @@ function ExecutionTab({
               }))}
               summary={`${title} for ${items.length} items. The table below lists every value.`}
             />
+            {/* FR-046: execution by category */}
+            <DataTable
+              label={`${title} by category`}
+              rows={data.categories.filter((c) => c.type === type)}
+              rowKey={(c) => c.id}
+              columns={[
+                { key: "c", header: "Category", cell: (c) => c.name },
+                {
+                  key: "e",
+                  header: "Estimated to date",
+                  numeric: true,
+                  cell: (c) => m(c.subtotal.estimatedToDate),
+                },
+                { key: "a", header: "Actual", numeric: true, cell: (c) => m(c.subtotal.actual) },
+                {
+                  key: "p",
+                  header: "Projected total",
+                  numeric: true,
+                  cell: (c) => m(c.subtotal.projected),
+                },
+              ]}
+            />
             <DataTable<ExecutionItem & { category: string }>
               label={`${title} execution`}
               rows={items}

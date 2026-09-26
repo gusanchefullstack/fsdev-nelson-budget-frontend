@@ -26,7 +26,13 @@ export type ExecutionItem = {
 };
 export type Execution = {
   budget: { id: string; name: string; currency: string };
-  categories: { id: string; name: string; type: CategoryType; items: ExecutionItem[] }[];
+  categories: {
+    id: string;
+    name: string;
+    type: CategoryType;
+    items: ExecutionItem[];
+    subtotal: { estimatedToDate: string; actual: string; projected: string };
+  }[];
   totals: Record<
     | "estimatedIncomeToDate"
     | "actualIncome"
