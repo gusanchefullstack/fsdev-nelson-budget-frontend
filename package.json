@@ -58,11 +58,13 @@
     "vite": "^8.3.0",
     "vitest": "^5.0.2"
   },
-  "description": "Nelson budget control app — web client",
+  "description": "Nelson budget control app \u2014 web client",
   "engines": {
     "node": "24.x"
   },
   "allowScripts": {
     "fsevents": false
-  }
+  },
+  "license": "MIT",
+  "author": "Gustavo Sanchez"
 }
