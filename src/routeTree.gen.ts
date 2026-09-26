@@ -16,7 +16,13 @@ import { Route as SignInRouteImport } from './routes/sign-in'
 import { Route as SignUpRouteImport } from './routes/sign-up'
 import { Route as AuthedIndexRouteImport } from './routes/_authed/index'
 import { Route as AuthedProfileRouteImport } from './routes/_authed/profile'
+import { Route as AuthedAccountsIndexRouteImport } from './routes/_authed/accounts/index'
+import { Route as AuthedAccountsIdRouteImport } from './routes/_authed/accounts/$id'
 import { Route as AuthedBudgetsIndexRouteImport } from './routes/_authed/budgets/index'
+import { Route as AuthedPayorsIndexRouteImport } from './routes/_authed/payors/index'
+import { Route as AuthedPayorsIdRouteImport } from './routes/_authed/payors/$id'
+import { Route as AuthedVendorsIndexRouteImport } from './routes/_authed/vendors/index'
+import { Route as AuthedVendorsIdRouteImport } from './routes/_authed/vendors/$id'
 import { Route as AuthedBudgetsBudgetIdIndexRouteImport } from './routes/_authed/budgets/$budgetId/index'
 import { Route as AuthedBudgetsNewIndexRouteImport } from './routes/_authed/budgets/new/index'
 import { Route as AuthedBudgetsNewLiteRouteImport } from './routes/_authed/budgets/new/lite'
@@ -56,9 +62,39 @@ const AuthedProfileRoute = AuthedProfileRouteImport.update({
   path: '/profile',
   getParentRoute: () => AuthedRoute,
 } as any)
+const AuthedAccountsIndexRoute = AuthedAccountsIndexRouteImport.update({
+  id: '/accounts/',
+  path: '/accounts/',
+  getParentRoute: () => AuthedRoute,
+} as any)
+const AuthedAccountsIdRoute = AuthedAccountsIdRouteImport.update({
+  id: '/accounts/$id',
+  path: '/accounts/$id',
+  getParentRoute: () => AuthedRoute,
+} as any)
 const AuthedBudgetsIndexRoute = AuthedBudgetsIndexRouteImport.update({
   id: '/budgets/',
   path: '/budgets/',
+  getParentRoute: () => AuthedRoute,
+} as any)
+const AuthedPayorsIndexRoute = AuthedPayorsIndexRouteImport.update({
+  id: '/payors/',
+  path: '/payors/',
+  getParentRoute: () => AuthedRoute,
+} as any)
+const AuthedPayorsIdRoute = AuthedPayorsIdRouteImport.update({
+  id: '/payors/$id',
+  path: '/payors/$id',
+  getParentRoute: () => AuthedRoute,
+} as any)
+const AuthedVendorsIndexRoute = AuthedVendorsIndexRouteImport.update({
+  id: '/vendors/',
+  path: '/vendors/',
+  getParentRoute: () => AuthedRoute,
+} as any)
+const AuthedVendorsIdRoute = AuthedVendorsIdRouteImport.update({
+  id: '/vendors/$id',
+  path: '/vendors/$id',
   getParentRoute: () => AuthedRoute,
 } as any)
 const AuthedBudgetsBudgetIdIndexRoute =
@@ -91,7 +127,13 @@ export interface FileRoutesByFullPath {
   '/sign-in': typeof SignInRoute
   '/sign-up': typeof SignUpRoute
   '/profile': typeof AuthedProfileRoute
+  '/accounts/$id': typeof AuthedAccountsIdRoute
+  '/payors/$id': typeof AuthedPayorsIdRoute
+  '/vendors/$id': typeof AuthedVendorsIdRoute
+  '/accounts/': typeof AuthedAccountsIndexRoute
   '/budgets/': typeof AuthedBudgetsIndexRoute
+  '/payors/': typeof AuthedPayorsIndexRoute
+  '/vendors/': typeof AuthedVendorsIndexRoute
   '/budgets/new/lite': typeof AuthedBudgetsNewLiteRoute
   '/budgets/$budgetId/': typeof AuthedBudgetsBudgetIdIndexRoute
   '/budgets/new/': typeof AuthedBudgetsNewIndexRoute
@@ -104,7 +146,13 @@ export interface FileRoutesByTo {
   '/sign-up': typeof SignUpRoute
   '/profile': typeof AuthedProfileRoute
   '/': typeof AuthedIndexRoute
+  '/accounts/$id': typeof AuthedAccountsIdRoute
+  '/payors/$id': typeof AuthedPayorsIdRoute
+  '/vendors/$id': typeof AuthedVendorsIdRoute
+  '/accounts': typeof AuthedAccountsIndexRoute
   '/budgets': typeof AuthedBudgetsIndexRoute
+  '/payors': typeof AuthedPayorsIndexRoute
+  '/vendors': typeof AuthedVendorsIndexRoute
   '/budgets/new/lite': typeof AuthedBudgetsNewLiteRoute
   '/budgets/$budgetId': typeof AuthedBudgetsBudgetIdIndexRoute
   '/budgets/new': typeof AuthedBudgetsNewIndexRoute
@@ -119,7 +167,13 @@ export interface FileRoutesById {
   '/sign-up': typeof SignUpRoute
   '/_authed/profile': typeof AuthedProfileRoute
   '/_authed/': typeof AuthedIndexRoute
+  '/_authed/accounts/$id': typeof AuthedAccountsIdRoute
+  '/_authed/payors/$id': typeof AuthedPayorsIdRoute
+  '/_authed/vendors/$id': typeof AuthedVendorsIdRoute
+  '/_authed/accounts/': typeof AuthedAccountsIndexRoute
   '/_authed/budgets/': typeof AuthedBudgetsIndexRoute
+  '/_authed/payors/': typeof AuthedPayorsIndexRoute
+  '/_authed/vendors/': typeof AuthedVendorsIndexRoute
   '/_authed/budgets/new/lite': typeof AuthedBudgetsNewLiteRoute
   '/_authed/budgets/$budgetId/': typeof AuthedBudgetsBudgetIdIndexRoute
   '/_authed/budgets/new/': typeof AuthedBudgetsNewIndexRoute
@@ -134,7 +188,13 @@ export interface FileRouteTypes {
     | '/sign-in'
     | '/sign-up'
     | '/profile'
+    | '/accounts/$id'
+    | '/payors/$id'
+    | '/vendors/$id'
+    | '/accounts/'
     | '/budgets/'
+    | '/payors/'
+    | '/vendors/'
     | '/budgets/new/lite'
     | '/budgets/$budgetId/'
     | '/budgets/new/'
@@ -147,7 +207,13 @@ export interface FileRouteTypes {
     | '/sign-up'
     | '/profile'
     | '/'
+    | '/accounts/$id'
+    | '/payors/$id'
+    | '/vendors/$id'
+    | '/accounts'
     | '/budgets'
+    | '/payors'
+    | '/vendors'
     | '/budgets/new/lite'
     | '/budgets/$budgetId'
     | '/budgets/new'
@@ -161,7 +227,13 @@ export interface FileRouteTypes {
     | '/sign-up'
     | '/_authed/profile'
     | '/_authed/'
+    | '/_authed/accounts/$id'
+    | '/_authed/payors/$id'
+    | '/_authed/vendors/$id'
+    | '/_authed/accounts/'
     | '/_authed/budgets/'
+    | '/_authed/payors/'
+    | '/_authed/vendors/'
     | '/_authed/budgets/new/lite'
     | '/_authed/budgets/$budgetId/'
     | '/_authed/budgets/new/'
@@ -227,11 +299,53 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthedProfileRouteImport
       parentRoute: typeof AuthedRoute
     }
+    '/_authed/accounts/': {
+      id: '/_authed/accounts/'
+      path: '/accounts'
+      fullPath: '/accounts/'
+      preLoaderRoute: typeof AuthedAccountsIndexRouteImport
+      parentRoute: typeof AuthedRoute
+    }
+    '/_authed/accounts/$id': {
+      id: '/_authed/accounts/$id'
+      path: '/accounts/$id'
+      fullPath: '/accounts/$id'
+      preLoaderRoute: typeof AuthedAccountsIdRouteImport
+      parentRoute: typeof AuthedRoute
+    }
     '/_authed/budgets/': {
       id: '/_authed/budgets/'
       path: '/budgets'
       fullPath: '/budgets/'
       preLoaderRoute: typeof AuthedBudgetsIndexRouteImport
+      parentRoute: typeof AuthedRoute
+    }
+    '/_authed/payors/': {
+      id: '/_authed/payors/'
+      path: '/payors'
+      fullPath: '/payors/'
+      preLoaderRoute: typeof AuthedPayorsIndexRouteImport
+      parentRoute: typeof AuthedRoute
+    }
+    '/_authed/payors/$id': {
+      id: '/_authed/payors/$id'
+      path: '/payors/$id'
+      fullPath: '/payors/$id'
+      preLoaderRoute: typeof AuthedPayorsIdRouteImport
+      parentRoute: typeof AuthedRoute
+    }
+    '/_authed/vendors/': {
+      id: '/_authed/vendors/'
+      path: '/vendors'
+      fullPath: '/vendors/'
+      preLoaderRoute: typeof AuthedVendorsIndexRouteImport
+      parentRoute: typeof AuthedRoute
+    }
+    '/_authed/vendors/$id': {
+      id: '/_authed/vendors/$id'
+      path: '/vendors/$id'
+      fullPath: '/vendors/$id'
+      preLoaderRoute: typeof AuthedVendorsIdRouteImport
       parentRoute: typeof AuthedRoute
     }
     '/_authed/budgets/$budgetId/': {
@@ -268,7 +382,13 @@ declare module '@tanstack/react-router' {
 interface AuthedRouteChildren {
   AuthedProfileRoute: typeof AuthedProfileRoute
   AuthedIndexRoute: typeof AuthedIndexRoute
+  AuthedAccountsIdRoute: typeof AuthedAccountsIdRoute
+  AuthedPayorsIdRoute: typeof AuthedPayorsIdRoute
+  AuthedVendorsIdRoute: typeof AuthedVendorsIdRoute
+  AuthedAccountsIndexRoute: typeof AuthedAccountsIndexRoute
   AuthedBudgetsIndexRoute: typeof AuthedBudgetsIndexRoute
+  AuthedPayorsIndexRoute: typeof AuthedPayorsIndexRoute
+  AuthedVendorsIndexRoute: typeof AuthedVendorsIndexRoute
   AuthedBudgetsNewLiteRoute: typeof AuthedBudgetsNewLiteRoute
   AuthedBudgetsBudgetIdIndexRoute: typeof AuthedBudgetsBudgetIdIndexRoute
   AuthedBudgetsNewIndexRoute: typeof AuthedBudgetsNewIndexRoute
@@ -278,7 +398,13 @@ interface AuthedRouteChildren {
 const AuthedRouteChildren: AuthedRouteChildren = {
   AuthedProfileRoute: AuthedProfileRoute,
   AuthedIndexRoute: AuthedIndexRoute,
+  AuthedAccountsIdRoute: AuthedAccountsIdRoute,
+  AuthedPayorsIdRoute: AuthedPayorsIdRoute,
+  AuthedVendorsIdRoute: AuthedVendorsIdRoute,
+  AuthedAccountsIndexRoute: AuthedAccountsIndexRoute,
   AuthedBudgetsIndexRoute: AuthedBudgetsIndexRoute,
+  AuthedPayorsIndexRoute: AuthedPayorsIndexRoute,
+  AuthedVendorsIndexRoute: AuthedVendorsIndexRoute,
   AuthedBudgetsNewLiteRoute: AuthedBudgetsNewLiteRoute,
   AuthedBudgetsBudgetIdIndexRoute: AuthedBudgetsBudgetIdIndexRoute,
   AuthedBudgetsNewIndexRoute: AuthedBudgetsNewIndexRoute,

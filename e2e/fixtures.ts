@@ -102,3 +102,21 @@ export async function addItem(
   await expect(page.getByRole("link", { name: item.name })).toBeVisible();
   await expect(page.getByRole("dialog")).toHaveCount(0);
 }
+
+export async function createParty(
+  page: Page,
+  collection: "accounts" | "payors" | "vendors",
+  p: { name: string; type: string; currency?: "USD" | "COP"; opening?: string },
+) {
+  const singular = collection.slice(0, -1);
+  await page.goto(`/${collection}`);
+  await page.getByRole("button", { name: `New ${singular}` }).click();
+  const dialog = page.getByRole("dialog");
+  await dialog.getByLabel(field("Name")).fill(p.name);
+  await dialog.getByLabel(field("Type")).selectOption(p.type);
+  await dialog.getByLabel(field("Currency")).selectOption(p.currency ?? "USD");
+  if (p.opening !== undefined) await dialog.getByLabel(field("Opening balance")).fill(p.opening);
+  await dialog.getByRole("button", { name: `Add ${singular}` }).click();
+  await expect(page.getByRole("dialog")).toHaveCount(0);
+  await expect(page.getByRole("link", { name: p.name })).toBeVisible();
+}
