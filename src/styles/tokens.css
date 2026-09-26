@@ -38,9 +38,10 @@
   --input: #7a7a7a; /* ≥ 3:1 against the background for form controls */
   --ring: var(--palette-navy); /* orange is only 2.9:1 on white */
   --link: var(--palette-navy);
-  --chart-estimated: var(--palette-silver);
-  --chart-actual: var(--palette-navy);
-  --chart-highlight: var(--palette-orange);
+  /* Chart series, validated for CVD separation and 3:1 contrast (fixed order: estimated, actual) */
+  --chart-estimated: var(--palette-blue);
+  --chart-actual: #d45500; /* palette orange, deepened to clear 3:1 on white */
+  --chart-grid: #e2e2e2;
   --chart-1: var(--palette-navy);
   --chart-2: var(--palette-orange);
   --chart-3: var(--palette-blue);
@@ -70,9 +71,9 @@
   --input: #8aa1bf;
   --ring: var(--palette-orange);
   --link: #9cc3ec;
-  --chart-estimated: #5b7291;
-  --chart-actual: var(--palette-orange);
-  --chart-highlight: #9cc3ec;
+  --chart-estimated: #4d8fd6;
+  --chart-actual: #e05a00;
+  --chart-grid: #22395a;
   --chart-1: var(--palette-orange);
   --chart-2: #9cc3ec;
   --chart-3: var(--palette-silver);
