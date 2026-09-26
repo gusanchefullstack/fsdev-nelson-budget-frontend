@@ -19,7 +19,11 @@ export const field = (label: string) => new RegExp(`^${label}( \\*)?$`);
 
 export type TestUser = { username: string; email: string; password: string; firstName: string };
 
-export async function signUp(page: Page, overrides: Partial<TestUser> = {}): Promise<TestUser> {
+export async function signUp(
+  page: Page,
+  overrides: Partial<TestUser> = {},
+  options: { keepOnboarding?: boolean } = {},
+): Promise<TestUser> {
   const id = unique();
   const user = {
     username: `e2e${id}`,
@@ -42,7 +46,13 @@ export async function signUp(page: Page, overrides: Partial<TestUser> = {}): Pro
   await page.getByLabel(field("Country code")).fill("+57");
   await page.getByLabel(field("Number")).fill("3001234567");
   await page.getByRole("button", { name: "Create account" }).click();
-  await expect(page.getByRole("heading", { level: 1 })).toContainText(`Welcome, ${user.firstName}`);
+  await expect(page.getByRole("heading", { name: "Welcome to Nelson" })).toBeVisible();
+  if (!options.keepOnboarding) {
+    await page.getByRole("button", { name: "Skip for now" }).click();
+    await expect(page.getByRole("heading", { level: 1 })).toContainText(
+      `Welcome, ${user.firstName}`,
+    );
+  }
   return user;
 }
 

@@ -30,9 +30,10 @@ export function useUpdateProfile() {
   return useMutation({
     mutationFn: (body: Partial<Profile>) =>
       api<One<Profile>>("/me", { method: "PATCH", body }).then((r) => r.data),
+    // Returning the promise makes callers wait until the session (used by route guards) is fresh.
     onSuccess: (profile) => {
       queryClient.setQueryData(profileQuery.queryKey, profile);
-      void queryClient.invalidateQueries({ queryKey: ["session"] });
+      return queryClient.refetchQueries({ queryKey: ["session"] });
     },
   });
 }

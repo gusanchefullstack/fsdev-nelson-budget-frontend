@@ -15,6 +15,7 @@ import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as SignInRouteImport } from './routes/sign-in'
 import { Route as SignUpRouteImport } from './routes/sign-up'
 import { Route as AuthedIndexRouteImport } from './routes/_authed/index'
+import { Route as AuthedOnboardingRouteImport } from './routes/_authed/onboarding'
 import { Route as AuthedProfileRouteImport } from './routes/_authed/profile'
 import { Route as AuthedReportsRouteImport } from './routes/_authed/reports'
 import { Route as AuthedAccountsIndexRouteImport } from './routes/_authed/accounts/index'
@@ -61,6 +62,11 @@ const SignUpRoute = SignUpRouteImport.update({
 const AuthedIndexRoute = AuthedIndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => AuthedRoute,
+} as any)
+const AuthedOnboardingRoute = AuthedOnboardingRouteImport.update({
+  id: '/onboarding',
+  path: '/onboarding',
   getParentRoute: () => AuthedRoute,
 } as any)
 const AuthedProfileRoute = AuthedProfileRouteImport.update({
@@ -163,6 +169,7 @@ export interface FileRoutesByFullPath {
   '/reset-password': typeof ResetPasswordRoute
   '/sign-in': typeof SignInRoute
   '/sign-up': typeof SignUpRoute
+  '/onboarding': typeof AuthedOnboardingRoute
   '/profile': typeof AuthedProfileRoute
   '/reports': typeof AuthedReportsRoute
   '/accounts/$id': typeof AuthedAccountsIdRoute
@@ -187,6 +194,7 @@ export interface FileRoutesByTo {
   '/reset-password': typeof ResetPasswordRoute
   '/sign-in': typeof SignInRoute
   '/sign-up': typeof SignUpRoute
+  '/onboarding': typeof AuthedOnboardingRoute
   '/profile': typeof AuthedProfileRoute
   '/reports': typeof AuthedReportsRoute
   '/': typeof AuthedIndexRoute
@@ -214,6 +222,7 @@ export interface FileRoutesById {
   '/reset-password': typeof ResetPasswordRoute
   '/sign-in': typeof SignInRoute
   '/sign-up': typeof SignUpRoute
+  '/_authed/onboarding': typeof AuthedOnboardingRoute
   '/_authed/profile': typeof AuthedProfileRoute
   '/_authed/reports': typeof AuthedReportsRoute
   '/_authed/': typeof AuthedIndexRoute
@@ -242,6 +251,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/sign-in'
     | '/sign-up'
+    | '/onboarding'
     | '/profile'
     | '/reports'
     | '/accounts/$id'
@@ -266,6 +276,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/sign-in'
     | '/sign-up'
+    | '/onboarding'
     | '/profile'
     | '/reports'
     | '/'
@@ -292,6 +303,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/sign-in'
     | '/sign-up'
+    | '/_authed/onboarding'
     | '/_authed/profile'
     | '/_authed/reports'
     | '/_authed/'
@@ -363,6 +375,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof AuthedIndexRouteImport
+      parentRoute: typeof AuthedRoute
+    }
+    '/_authed/onboarding': {
+      id: '/_authed/onboarding'
+      path: '/onboarding'
+      fullPath: '/onboarding'
+      preLoaderRoute: typeof AuthedOnboardingRouteImport
       parentRoute: typeof AuthedRoute
     }
     '/_authed/profile': {
@@ -495,6 +514,7 @@ declare module '@tanstack/react-router' {
 }
 
 interface AuthedRouteChildren {
+  AuthedOnboardingRoute: typeof AuthedOnboardingRoute
   AuthedProfileRoute: typeof AuthedProfileRoute
   AuthedReportsRoute: typeof AuthedReportsRoute
   AuthedIndexRoute: typeof AuthedIndexRoute
@@ -517,6 +537,7 @@ interface AuthedRouteChildren {
 }
 
 const AuthedRouteChildren: AuthedRouteChildren = {
+  AuthedOnboardingRoute: AuthedOnboardingRoute,
   AuthedProfileRoute: AuthedProfileRoute,
   AuthedReportsRoute: AuthedReportsRoute,
   AuthedIndexRoute: AuthedIndexRoute,

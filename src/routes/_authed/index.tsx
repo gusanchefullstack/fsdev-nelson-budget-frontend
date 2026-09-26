@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, redirect } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { AlertTriangleIcon, CircleAlertIcon } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
@@ -9,7 +9,13 @@ import { EmptyState, ErrorState, LoadingState } from "@/components/page-states";
 import { dashboardQuery, type Alert } from "@/features/reports/api";
 import { formatDate, formatDateTime, formatMoney } from "@/lib/temporal";
 
-export const Route = createFileRoute("/_authed/")({ component: Dashboard });
+export const Route = createFileRoute("/_authed/")({
+  // New users see the onboarding guide until they finish or skip it (FR-060).
+  beforeLoad: ({ context }) => {
+    if (context.user.onboardingStatus === "PENDING") throw redirect({ to: "/onboarding" });
+  },
+  component: Dashboard,
+});
 
 function Dashboard() {
   const { user } = Route.useRouteContext();
