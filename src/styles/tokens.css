@@ -1,16 +1,17 @@
 /*
  * Nelson design tokens — the single place to change colors, fonts and radii (Principle IV).
- * Palette: https://coolors.co/palette/ff6700-ebebeb-c0c0c0-3a6ea5-004e98
+ * Palette: https://coolors.co/palette/f7f2f7-b9b4bb-c0f20a-084c61-023047
+ * Derived shades keep their base color's hue and only change lightness/chroma, and exist only
+ * where a base color fails a contrast or chart check (specs/002-money-palette/research.md).
  * Semantic names follow shadcn/ui so every component picks them up.
  */
 :root {
-  /* Brand palette */
-  --palette-orange: #ff6700;
-  --palette-light: #ebebeb;
-  --palette-silver: #c0c0c0;
-  --palette-blue: #3a6ea5;
-  --palette-navy: #004e98;
-  --palette-ink: #0b1a2e;
+  /* Money palette */
+  --palette-offwhite: #f7f2f7;
+  --palette-gray: #b9b4bb;
+  --palette-lime: #c0f20a;
+  --palette-teal: #084c61;
+  --palette-navy: #023047;
   --palette-white: #ffffff;
 
   /* Typography */
@@ -18,66 +19,72 @@
   --radius: 0.5rem;
 
   /* Light theme (all text pairs ≥ 4.5:1) */
-  --background: var(--palette-white);
-  --foreground: var(--palette-ink);
+  --background: var(--palette-offwhite);
+  --foreground: var(--palette-navy);
   --card: var(--palette-white);
-  --card-foreground: var(--palette-ink);
+  --card-foreground: var(--palette-navy);
   --popover: var(--palette-white);
-  --popover-foreground: var(--palette-ink);
-  --primary: var(--palette-navy);
-  --primary-foreground: var(--palette-white);
-  --secondary: var(--palette-light);
-  --secondary-foreground: var(--palette-ink);
-  --muted: var(--palette-light);
-  --muted-foreground: #4a4a4a;
-  --accent: var(--palette-orange);
-  --accent-foreground: var(--palette-ink);
+  --popover-foreground: var(--palette-navy);
+  --primary: var(--palette-teal);
+  --primary-foreground: var(--palette-offwhite);
+  --secondary: #eae6eb; /* gray, derived light */
+  --secondary-foreground: var(--palette-navy);
+  --muted: #eae6eb;
+  --muted-foreground: #5d595f; /* gray, derived dark: ≥ 5.5:1 on every light surface */
+  --accent: var(--palette-lime); /* fill only, always with navy text */
+  --accent-foreground: var(--palette-navy);
   --destructive: #b3261e;
-  --success: #1d6b3a;
-  --border: var(--palette-silver);
-  --input: #7a7a7a; /* ≥ 3:1 against the background for form controls */
-  --ring: var(--palette-navy); /* orange is only 2.9:1 on white */
-  --link: var(--palette-navy);
-  /* Chart series, validated for CVD separation and 3:1 contrast (fixed order: estimated, actual) */
-  --chart-estimated: var(--palette-blue);
-  --chart-actual: #d45500; /* palette orange, deepened to clear 3:1 on white */
-  --chart-grid: #e2e2e2;
-  --chart-1: var(--palette-navy);
-  --chart-2: var(--palette-orange);
-  --chart-3: var(--palette-blue);
-  --chart-4: var(--palette-silver);
-  --chart-5: var(--palette-ink);
-  --gradient-hero: linear-gradient(135deg, var(--palette-navy), var(--palette-blue));
+  --success: #1d6b3a; /* confirmations only */
+  --positive: var(--palette-lime); /* "money is doing well" mark */
+  --positive-foreground: var(--palette-navy);
+  --border: var(--palette-gray); /* decorative lines only */
+  --input: #837e85; /* gray, derived: ≥ 3:1 for form controls */
+  --ring: var(--palette-teal);
+  --link: var(--palette-teal);
+  --overlay: rgb(2 48 71 / 0.25); /* navy scrim behind dialogs */
+  /* Chart series, validated for CVD separation and 3:1 contrast on background and card (fixed order: estimated, actual) */
+  --chart-estimated: #0a80a2; /* teal, derived */
+  --chart-actual: #6a870a; /* lime, derived */
+  --chart-grid: #e0dce2;
+  --chart-1: var(--palette-teal);
+  --chart-2: #6a870a;
+  --chart-3: #0a80a2;
+  --chart-4: var(--palette-gray);
+  --chart-5: var(--palette-navy);
+  --gradient-hero: linear-gradient(135deg, var(--palette-navy), var(--palette-teal));
 }
 
 .dark {
-  --background: var(--palette-ink);
-  --foreground: var(--palette-light);
-  --card: #10243f;
-  --card-foreground: var(--palette-light);
-  --popover: #10243f;
-  --popover-foreground: var(--palette-light);
-  --primary: var(--palette-orange);
-  --primary-foreground: var(--palette-ink);
-  --secondary: #1b3558;
-  --secondary-foreground: var(--palette-light);
-  --muted: #16304f;
-  --muted-foreground: var(--palette-silver);
-  --accent: var(--palette-blue);
-  --accent-foreground: var(--palette-white);
-  --destructive: #ff8a80;
-  --success: #7ddc9b;
-  --border: #35557d;
-  --input: #8aa1bf;
-  --ring: var(--palette-orange);
-  --link: #9cc3ec;
-  --chart-estimated: #4d8fd6;
-  --chart-actual: #e05a00;
-  --chart-grid: #22395a;
-  --chart-1: var(--palette-orange);
-  --chart-2: #9cc3ec;
-  --chart-3: var(--palette-silver);
-  --chart-4: #5b7291;
-  --chart-5: var(--palette-light);
-  --gradient-hero: linear-gradient(135deg, #10243f, var(--palette-navy));
+  --background: var(--palette-navy);
+  --foreground: var(--palette-offwhite);
+  --card: #113c54; /* navy, derived */
+  --card-foreground: var(--palette-offwhite);
+  --popover: #113c54;
+  --popover-foreground: var(--palette-offwhite);
+  --primary: var(--palette-lime);
+  --primary-foreground: var(--palette-navy);
+  --secondary: #214860; /* navy, derived */
+  --secondary-foreground: var(--palette-offwhite);
+  --muted: #214860;
+  --muted-foreground: var(--palette-gray);
+  --accent: #7acae9; /* teal, derived light */
+  --accent-foreground: var(--palette-navy);
+  --destructive: #ff968d; /* red, light: ≥ 4.5:1 on its own 20% tint over navy */
+  --success: #78dca9; /* green, derived mint */
+  --positive: var(--palette-lime);
+  --positive-foreground: var(--palette-navy);
+  --border: #3f5f74;
+  --input: #7c96a8;
+  --ring: var(--palette-lime);
+  --link: #7acae9;
+  --overlay: rgb(0 0 0 / 0.45);
+  --chart-estimated: #139ac2; /* teal, derived */
+  --chart-actual: #7fa10c; /* lime, derived */
+  --chart-grid: #2c4c5f;
+  --chart-1: var(--palette-lime);
+  --chart-2: #139ac2;
+  --chart-3: #7fa10c;
+  --chart-4: var(--palette-gray);
+  --chart-5: var(--palette-offwhite);
+  --gradient-hero: linear-gradient(135deg, #113c54, var(--palette-teal));
 }
