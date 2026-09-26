@@ -135,7 +135,7 @@ Distributed under the MIT License. See [LICENSE](./LICENSE) for details.
 
 ## Credits
 
-[React](https://react.dev), [TanStack Router & Query](https://tanstack.com), [shadcn/ui](https://ui.shadcn.com) on [Base UI](https://base-ui.com), [Tailwind CSS](https://tailwindcss.com), [Zustand](https://zustand.docs.pmnd.rs), [Zod](https://zod.dev), [D3](https://d3js.org), [dnd-kit](https://dndkit.com), [Stepperize](https://stepperize.com), [Better Auth](https://better-auth.com), [temporal-polyfill](https://github.com/fullcalendar/temporal-polyfill), [Roboto Mono](https://fonts.google.com/specimen/Roboto+Mono). Palette from [Coolors](https://coolors.co/palette/ff6700-ebebeb-c0c0c0-3a6ea5-004e98).
+[React](https://react.dev), [TanStack Router & Query](https://tanstack.com), [shadcn/ui](https://ui.shadcn.com) on [Base UI](https://base-ui.com), [Tailwind CSS](https://tailwindcss.com), [Zustand](https://zustand.docs.pmnd.rs), [Zod](https://zod.dev), [D3](https://d3js.org), [dnd-kit](https://dndkit.com), [Stepperize](https://stepperize.com), [Better Auth](https://better-auth.com), [temporal-polyfill](https://github.com/fullcalendar/temporal-polyfill), [Roboto Mono](https://fonts.google.com/specimen/Roboto+Mono). Palette from [Coolors](https://coolors.co/palette/f7f2f7-b9b4bb-c0f20a-084c61-023047).
 
 ## Author
 
