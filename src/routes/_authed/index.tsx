@@ -2,6 +2,7 @@ import { createFileRoute, Link, redirect } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { AlertTriangleIcon, CircleAlertIcon } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
+import { PositiveMark } from "@/components/positive-mark";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ComparisonChart } from "@/components/charts/comparison-chart";
 import { DataTable } from "@/components/charts/data-table";
@@ -78,7 +79,11 @@ function Dashboard() {
                         <p>
                           <span className="text-sm text-muted-foreground">Net so far</span>
                           <span className="block text-3xl font-semibold">
-                            {formatMoney(b.net, b.currency)}
+                            {Number(b.net) >= 0 ? (
+                              <PositiveMark>{formatMoney(b.net, b.currency)}</PositiveMark>
+                            ) : (
+                              formatMoney(b.net, b.currency)
+                            )}
                           </span>
                         </p>
                         <ComparisonChart
@@ -204,7 +209,11 @@ function Dashboard() {
                     header: "Amount",
                     numeric: true,
                     cell: (t) =>
-                      `${t.type === "INCOME" ? "+" : "−"}${formatMoney(t.amount, t.currency)}`,
+                      t.type === "INCOME" ? (
+                        <PositiveMark>+{formatMoney(t.amount, t.currency)}</PositiveMark>
+                      ) : (
+                        `−${formatMoney(t.amount, t.currency)}`
+                      ),
                   },
                 ]}
               />

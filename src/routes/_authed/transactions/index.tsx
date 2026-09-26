@@ -2,6 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { z } from "zod";
 import { Button, buttonVariants } from "@/components/ui/button";
+import { PositiveMark } from "@/components/positive-mark";
 import { Input } from "@/components/ui/input";
 import {
   Table,
@@ -157,11 +158,12 @@ function Transactions() {
                       ? `${t.payorName} → ${t.accountName}`
                       : `${t.accountName} → ${t.vendorName}`}
                   </TableCell>
-                  <TableCell
-                    className={t.type === "INCOME" ? "text-right text-success" : "text-right"}
-                  >
-                    {t.type === "INCOME" ? "+" : "−"}
-                    {formatMoney(t.amount, t.currency)}
+                  <TableCell className="text-right">
+                    {t.type === "INCOME" ? (
+                      <PositiveMark>+{formatMoney(t.amount, t.currency)}</PositiveMark>
+                    ) : (
+                      <span>−{formatMoney(t.amount, t.currency)}</span>
+                    )}
                   </TableCell>
                 </TableRow>
               ))}

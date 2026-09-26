@@ -2,6 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { z } from "zod";
 import { Input } from "@/components/ui/input";
+import { PositiveMark } from "@/components/positive-mark";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ComparisonChart } from "@/components/charts/comparison-chart";
 import { DataTable } from "@/components/charts/data-table";
@@ -192,7 +193,13 @@ function ExecutionTab({
         </div>
         <div>
           <dt className="text-sm text-muted-foreground">Projected net at budget end</dt>
-          <dd className="text-xl font-semibold">{m(t.projectedNet)}</dd>
+          <dd className="text-xl font-semibold">
+            {Number(t.projectedNet) >= 0 ? (
+              <PositiveMark>{m(t.projectedNet)}</PositiveMark>
+            ) : (
+              m(t.projectedNet)
+            )}
+          </dd>
         </div>
       </dl>
       {(["INCOME", "EXPENSE"] as const).map((type) => {
