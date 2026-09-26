@@ -17,6 +17,7 @@ export function AppHeader() {
   const navigate = useNavigate();
 
   async function signOut() {
+    setMenuOpen(false);
     await authClient.signOut();
     queryClient.clear();
     await navigate({ to: "/sign-in" });

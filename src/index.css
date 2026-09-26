@@ -63,5 +63,7 @@
   }
   a {
     color: var(--link);
+    text-decoration: underline;
+    text-underline-offset: 3px;
   }
 }

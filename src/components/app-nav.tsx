@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 
 // FR-045 — main sections, in spec order
-export const NAV_ITEMS = [
+const NAV_ITEMS = [
   { to: "/", label: "Dashboard" },
   { to: "/budgets", label: "Budgets" },
   { to: "/accounts", label: "Accounts" },
