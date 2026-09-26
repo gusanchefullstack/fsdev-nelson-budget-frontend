@@ -15,6 +15,11 @@ const MODES = [
     title: "Guided",
     text: "Step by step: basic info, then income and expense categories and items, then review.",
   },
+  {
+    to: "/budgets/new/complete",
+    title: "Complete",
+    text: "Build everything on one screen as a tree and drag items between categories.",
+  },
 ] as const;
 
 function NewBudget() {
