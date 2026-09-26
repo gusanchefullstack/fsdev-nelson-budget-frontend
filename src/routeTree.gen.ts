@@ -16,6 +16,11 @@ import { Route as SignInRouteImport } from './routes/sign-in'
 import { Route as SignUpRouteImport } from './routes/sign-up'
 import { Route as AuthedIndexRouteImport } from './routes/_authed/index'
 import { Route as AuthedProfileRouteImport } from './routes/_authed/profile'
+import { Route as AuthedBudgetsIndexRouteImport } from './routes/_authed/budgets/index'
+import { Route as AuthedBudgetsBudgetIdIndexRouteImport } from './routes/_authed/budgets/$budgetId/index'
+import { Route as AuthedBudgetsNewIndexRouteImport } from './routes/_authed/budgets/new/index'
+import { Route as AuthedBudgetsNewLiteRouteImport } from './routes/_authed/budgets/new/lite'
+import { Route as AuthedBudgetsBudgetIdItemsItemIdRouteImport } from './routes/_authed/budgets/$budgetId/items/$itemId'
 
 const AuthedRoute = AuthedRouteImport.update({
   id: '/_authed',
@@ -51,6 +56,33 @@ const AuthedProfileRoute = AuthedProfileRouteImport.update({
   path: '/profile',
   getParentRoute: () => AuthedRoute,
 } as any)
+const AuthedBudgetsIndexRoute = AuthedBudgetsIndexRouteImport.update({
+  id: '/budgets/',
+  path: '/budgets/',
+  getParentRoute: () => AuthedRoute,
+} as any)
+const AuthedBudgetsBudgetIdIndexRoute =
+  AuthedBudgetsBudgetIdIndexRouteImport.update({
+    id: '/budgets/$budgetId/',
+    path: '/budgets/$budgetId/',
+    getParentRoute: () => AuthedRoute,
+  } as any)
+const AuthedBudgetsNewIndexRoute = AuthedBudgetsNewIndexRouteImport.update({
+  id: '/budgets/new/',
+  path: '/budgets/new/',
+  getParentRoute: () => AuthedRoute,
+} as any)
+const AuthedBudgetsNewLiteRoute = AuthedBudgetsNewLiteRouteImport.update({
+  id: '/budgets/new/lite',
+  path: '/budgets/new/lite',
+  getParentRoute: () => AuthedRoute,
+} as any)
+const AuthedBudgetsBudgetIdItemsItemIdRoute =
+  AuthedBudgetsBudgetIdItemsItemIdRouteImport.update({
+    id: '/budgets/$budgetId/items/$itemId',
+    path: '/budgets/$budgetId/items/$itemId',
+    getParentRoute: () => AuthedRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof AuthedIndexRoute
@@ -59,6 +91,11 @@ export interface FileRoutesByFullPath {
   '/sign-in': typeof SignInRoute
   '/sign-up': typeof SignUpRoute
   '/profile': typeof AuthedProfileRoute
+  '/budgets/': typeof AuthedBudgetsIndexRoute
+  '/budgets/new/lite': typeof AuthedBudgetsNewLiteRoute
+  '/budgets/$budgetId/': typeof AuthedBudgetsBudgetIdIndexRoute
+  '/budgets/new/': typeof AuthedBudgetsNewIndexRoute
+  '/budgets/$budgetId/items/$itemId': typeof AuthedBudgetsBudgetIdItemsItemIdRoute
 }
 export interface FileRoutesByTo {
   '/forgot-password': typeof ForgotPasswordRoute
@@ -67,6 +104,11 @@ export interface FileRoutesByTo {
   '/sign-up': typeof SignUpRoute
   '/profile': typeof AuthedProfileRoute
   '/': typeof AuthedIndexRoute
+  '/budgets': typeof AuthedBudgetsIndexRoute
+  '/budgets/new/lite': typeof AuthedBudgetsNewLiteRoute
+  '/budgets/$budgetId': typeof AuthedBudgetsBudgetIdIndexRoute
+  '/budgets/new': typeof AuthedBudgetsNewIndexRoute
+  '/budgets/$budgetId/items/$itemId': typeof AuthedBudgetsBudgetIdItemsItemIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -77,6 +119,11 @@ export interface FileRoutesById {
   '/sign-up': typeof SignUpRoute
   '/_authed/profile': typeof AuthedProfileRoute
   '/_authed/': typeof AuthedIndexRoute
+  '/_authed/budgets/': typeof AuthedBudgetsIndexRoute
+  '/_authed/budgets/new/lite': typeof AuthedBudgetsNewLiteRoute
+  '/_authed/budgets/$budgetId/': typeof AuthedBudgetsBudgetIdIndexRoute
+  '/_authed/budgets/new/': typeof AuthedBudgetsNewIndexRoute
+  '/_authed/budgets/$budgetId/items/$itemId': typeof AuthedBudgetsBudgetIdItemsItemIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -87,6 +134,11 @@ export interface FileRouteTypes {
     | '/sign-in'
     | '/sign-up'
     | '/profile'
+    | '/budgets/'
+    | '/budgets/new/lite'
+    | '/budgets/$budgetId/'
+    | '/budgets/new/'
+    | '/budgets/$budgetId/items/$itemId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/forgot-password'
@@ -95,6 +147,11 @@ export interface FileRouteTypes {
     | '/sign-up'
     | '/profile'
     | '/'
+    | '/budgets'
+    | '/budgets/new/lite'
+    | '/budgets/$budgetId'
+    | '/budgets/new'
+    | '/budgets/$budgetId/items/$itemId'
   id:
     | '__root__'
     | '/_authed'
@@ -104,6 +161,11 @@ export interface FileRouteTypes {
     | '/sign-up'
     | '/_authed/profile'
     | '/_authed/'
+    | '/_authed/budgets/'
+    | '/_authed/budgets/new/lite'
+    | '/_authed/budgets/$budgetId/'
+    | '/_authed/budgets/new/'
+    | '/_authed/budgets/$budgetId/items/$itemId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -165,17 +227,62 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthedProfileRouteImport
       parentRoute: typeof AuthedRoute
     }
+    '/_authed/budgets/': {
+      id: '/_authed/budgets/'
+      path: '/budgets'
+      fullPath: '/budgets/'
+      preLoaderRoute: typeof AuthedBudgetsIndexRouteImport
+      parentRoute: typeof AuthedRoute
+    }
+    '/_authed/budgets/$budgetId/': {
+      id: '/_authed/budgets/$budgetId/'
+      path: '/budgets/$budgetId'
+      fullPath: '/budgets/$budgetId/'
+      preLoaderRoute: typeof AuthedBudgetsBudgetIdIndexRouteImport
+      parentRoute: typeof AuthedRoute
+    }
+    '/_authed/budgets/new/': {
+      id: '/_authed/budgets/new/'
+      path: '/budgets/new'
+      fullPath: '/budgets/new/'
+      preLoaderRoute: typeof AuthedBudgetsNewIndexRouteImport
+      parentRoute: typeof AuthedRoute
+    }
+    '/_authed/budgets/new/lite': {
+      id: '/_authed/budgets/new/lite'
+      path: '/budgets/new/lite'
+      fullPath: '/budgets/new/lite'
+      preLoaderRoute: typeof AuthedBudgetsNewLiteRouteImport
+      parentRoute: typeof AuthedRoute
+    }
+    '/_authed/budgets/$budgetId/items/$itemId': {
+      id: '/_authed/budgets/$budgetId/items/$itemId'
+      path: '/budgets/$budgetId/items/$itemId'
+      fullPath: '/budgets/$budgetId/items/$itemId'
+      preLoaderRoute: typeof AuthedBudgetsBudgetIdItemsItemIdRouteImport
+      parentRoute: typeof AuthedRoute
+    }
   }
 }
 
 interface AuthedRouteChildren {
   AuthedProfileRoute: typeof AuthedProfileRoute
   AuthedIndexRoute: typeof AuthedIndexRoute
+  AuthedBudgetsIndexRoute: typeof AuthedBudgetsIndexRoute
+  AuthedBudgetsNewLiteRoute: typeof AuthedBudgetsNewLiteRoute
+  AuthedBudgetsBudgetIdIndexRoute: typeof AuthedBudgetsBudgetIdIndexRoute
+  AuthedBudgetsNewIndexRoute: typeof AuthedBudgetsNewIndexRoute
+  AuthedBudgetsBudgetIdItemsItemIdRoute: typeof AuthedBudgetsBudgetIdItemsItemIdRoute
 }
 
 const AuthedRouteChildren: AuthedRouteChildren = {
   AuthedProfileRoute: AuthedProfileRoute,
   AuthedIndexRoute: AuthedIndexRoute,
+  AuthedBudgetsIndexRoute: AuthedBudgetsIndexRoute,
+  AuthedBudgetsNewLiteRoute: AuthedBudgetsNewLiteRoute,
+  AuthedBudgetsBudgetIdIndexRoute: AuthedBudgetsBudgetIdIndexRoute,
+  AuthedBudgetsNewIndexRoute: AuthedBudgetsNewIndexRoute,
+  AuthedBudgetsBudgetIdItemsItemIdRoute: AuthedBudgetsBudgetIdItemsItemIdRoute,
 }
 
 const AuthedRouteWithChildren =

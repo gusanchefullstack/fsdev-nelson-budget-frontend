@@ -55,3 +55,50 @@ export async function signOut(page: Page) {
   }
   await expect(page).toHaveURL(/\/sign-in/);
 }
+
+export async function createLiteBudget(
+  page: Page,
+  b: { name: string; currency?: "USD" | "COP"; start: string; end: string },
+) {
+  await page.goto("/budgets/new/lite");
+  await page.getByLabel(field("Name")).fill(b.name);
+  await page.getByLabel(field("Currency")).selectOption(b.currency ?? "USD");
+  await page.getByLabel(field("Start date")).fill(b.start);
+  await page.getByLabel(field("End date")).fill(b.end);
+  await page.getByRole("button", { name: "Create budget" }).click();
+}
+
+export async function addCategory(page: Page, type: "income" | "expense", name: string) {
+  await page.getByRole("button", { name: `Add ${type} category` }).click();
+  const dialog = page.getByRole("dialog");
+  await dialog.getByLabel(field("Name")).fill(name);
+  await dialog.getByRole("button", { name: "Add category" }).click();
+  await expect(page.getByRole("heading", { name, level: 3 })).toBeVisible();
+  await expect(page.getByRole("dialog")).toHaveCount(0);
+}
+
+export async function addItem(
+  page: Page,
+  category: string,
+  item: {
+    name: string;
+    amount: string;
+    first: string;
+    start?: string;
+    end?: string;
+    frequency?: string;
+  },
+) {
+  await page.getByRole("button", { name: `Add item to ${category}` }).click();
+  const dialog = page.getByRole("dialog");
+  await dialog.getByLabel(field("Name")).fill(item.name);
+  await dialog.getByLabel(field("Description")).fill(`${item.name} payment`);
+  await dialog.getByLabel(/^Estimated amount/).fill(item.amount);
+  if (item.frequency) await dialog.getByLabel(field("Frequency")).selectOption(item.frequency);
+  await dialog.getByLabel(field("First expected date")).fill(item.first);
+  if (item.start) await dialog.getByLabel(field("Start date")).fill(item.start);
+  if (item.end) await dialog.getByLabel(field("End date")).fill(item.end);
+  await dialog.getByRole("button", { name: "Add item" }).click();
+  await expect(page.getByRole("link", { name: item.name })).toBeVisible();
+  await expect(page.getByRole("dialog")).toHaveCount(0);
+}

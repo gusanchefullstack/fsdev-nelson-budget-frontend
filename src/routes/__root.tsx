@@ -32,7 +32,7 @@ function Shell({ children }: { children: React.ReactNode }) {
         {children}
       </main>
       <SessionExpiredDialog />
-      <Toaster position="top-center" />
+      <Toaster position="top-center" expand />
     </>
   );
 }

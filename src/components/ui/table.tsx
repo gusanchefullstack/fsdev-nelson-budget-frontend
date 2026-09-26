@@ -1,9 +1,16 @@
 import * as React from "react";
 import { cn } from "cn";
 
-function Table({ className, ...props }: React.ComponentProps<"table">) {
+// The container scrolls on narrow screens, so it is a focusable, named region (WCAG 2.1.1).
+function Table({ className, label, ...props }: React.ComponentProps<"table"> & { label: string }) {
   return (
-    <div data-slot="table-container" className="relative w-full overflow-x-auto">
+    <div
+      data-slot="table-container"
+      role="region"
+      aria-label={label}
+      tabIndex={0}
+      className="relative w-full overflow-x-auto rounded-md focus-visible:outline-2 focus-visible:outline-ring"
+    >
       <table
         data-slot="table"
         className={cn("w-full caption-bottom text-sm", className)}
