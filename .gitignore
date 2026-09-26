@@ -16,3 +16,4 @@ playwright/.cache/
 .vscode/*
 !.vscode/extensions.json
 .idea/
+.vercel

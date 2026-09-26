@@ -1,7 +1,8 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "vite",
   "rewrites": [
-    { "source": "/api/:path*", "destination": "https://BACKEND_URL_SET_AT_DEPLOY/api/:path*" },
+    { "source": "/api/:path*", "destination": "https://fsdev-nelson-budget-backend.vercel.app/api/:path*" },
     { "source": "/((?!api/).*)", "destination": "/index.html" }
   ]
 }
