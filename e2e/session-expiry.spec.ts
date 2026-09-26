@@ -1,7 +1,10 @@
 import { expect, field, signUp, test } from "./fixtures";
 
 // Spec edge case: the session expires while a form is open — sign in again without losing the form.
-test("an expired session asks to sign in again, keeps the form and completes the save", async ({ page, context }) => {
+test("an expired session asks to sign in again, keeps the form and completes the save", async ({
+  page,
+  context,
+}) => {
   const user = await signUp(page);
   await page.goto("/budgets/new/lite");
   await page.getByLabel(field("Name")).fill("Kept after re-auth");

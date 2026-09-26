@@ -38,7 +38,9 @@ test("dashboard alerts and reports match hand calculation (scenario 14)", async 
   await page.goto("/");
   await expect(page.getByRole("heading", { name: "Alerts" })).toBeVisible();
   await expect(page.getByText("Rent: 11 past periods with no transaction recorded")).toBeVisible();
-  await expect(page.getByRole("listitem").filter({ hasText: "Rent: 11 past periods" })).toContainText("2025");
+  await expect(
+    page.getByRole("listitem").filter({ hasText: "Rent: 11 past periods" }),
+  ).toContainText("2025");
   await expect(page.getByText("Net so far")).toBeVisible();
   await expect(
     page.getByRole("img", { name: /expenses USD\s5,000\.00 of USD\s60,000\.00 estimated/ }),
