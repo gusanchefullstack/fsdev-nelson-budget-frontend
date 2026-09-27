@@ -71,10 +71,10 @@ test("capture README screenshots", async ({ browser }) => {
     const page = await ctx.newPage();
     await page.goto("/");
     await expect(page.getByText("Net so far")).toBeVisible();
-    await page.screenshot({ path: `screenshots/dashboard-${width}.png` });
+    await page.screenshot({ path: `screenshots/dashboard-light-${width}.png` });
     await page.goto("/reports");
     await expect(page.getByRole("region", { name: "Expenses execution" })).toBeVisible();
-    await page.screenshot({ path: `screenshots/reports-${width}.png` });
+    await page.screenshot({ path: `screenshots/reports-light-${width}.png` });
     await ctx.close();
   }
 });

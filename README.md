@@ -47,8 +47,8 @@ Spreadsheets tell you what you spent, not whether each bill landed when and for 
 
 | Desktop (1440 px) | Tablet (768 px) | Mobile (375 px) |
 |---|---|---|
-| <img src="screenshots/dashboard-1440.png" alt="Dashboard at 1440 pixels" width="720"> | <img src="screenshots/dashboard-768.png" alt="Dashboard at 768 pixels" width="384"> | <img src="screenshots/dashboard-375.png" alt="Dashboard at 375 pixels" width="288"> |
-| <img src="screenshots/reports-1440.png" alt="Reports at 1440 pixels" width="720"> | <img src="screenshots/reports-768.png" alt="Reports at 768 pixels" width="384"> | <img src="screenshots/reports-375.png" alt="Reports at 375 pixels" width="288"> |
+| <img src="screenshots/dashboard-light-1440.png" alt="Dashboard at 1440 pixels" width="720"> | <img src="screenshots/dashboard-light-768.png" alt="Dashboard at 768 pixels" width="384"> | <img src="screenshots/dashboard-light-375.png" alt="Dashboard at 375 pixels" width="288"> |
+| <img src="screenshots/reports-light-1440.png" alt="Reports at 1440 pixels" width="720"> | <img src="screenshots/reports-light-768.png" alt="Reports at 768 pixels" width="384"> | <img src="screenshots/reports-light-375.png" alt="Reports at 375 pixels" width="288"> |
 
 ## Installation
 
