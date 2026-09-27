@@ -83,6 +83,44 @@ test("dark theme uses navy, off-white and lime, and follows the device setting (
   await expect.poll(() => style(body, "background-color")).toBe(NAVY);
 });
 
+test("button focus outlines use solid theme colors and follow a live theme switch (FR-009)", async ({
+  page,
+}) => {
+  await signUp(page);
+  await createLiteBudget(page, { name: "Focus", start: "2025-01-01", end: "2025-12-31" });
+  await expect(page.getByRole("button", { name: "Delete budget" })).toBeVisible();
+  const budgetUrl = page.url();
+  const cases = [
+    { theme: "Light theme", dark: false, primary: TEAL, destructive: DESTRUCTIVE_LIGHT },
+    { theme: "Dark theme", dark: true, primary: LIME, destructive: "rgb(255, 150, 141)" },
+  ];
+  // Keyboard focus, so :focus-visible applies
+  const outlineOf = async (locator: Locator) => {
+    await page.keyboard.press("Shift");
+    await locator.focus();
+    return locator.evaluate((el) => {
+      const s = getComputedStyle(el);
+      return `${s.outlineStyle} ${s.outlineWidth} ${s.outlineColor}`;
+    });
+  };
+  for (const c of cases) {
+    await page.goto(budgetUrl);
+    // Let the saved theme load first, or it overrides the click
+    await expect(page.getByRole("button", { name: "Delete budget" })).toBeVisible();
+    await page.getByRole("banner").getByRole("radio", { name: c.theme }).click();
+    await expect(page.locator("html")).toHaveClass(c.dark ? /dark/ : /^(?!.*dark)/);
+    // No reload after switching: the outline must already use the new theme
+    await expect
+      .poll(() => outlineOf(page.getByRole("button", { name: "Delete budget" })))
+      .toBe(`solid 3px ${c.destructive}`);
+    await page.goto("/");
+    await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+    await expect
+      .poll(() => outlineOf(page.getByRole("link", { name: "Record transaction" })))
+      .toBe(`solid 3px ${c.primary}`);
+  }
+});
+
 test("positive money, success and errors are distinct and never color-only (US3)", async ({
   page,
 }) => {
