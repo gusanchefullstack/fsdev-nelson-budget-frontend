@@ -24,7 +24,7 @@ export function FormField({ id, label, error, hint, required, className, childre
   const errorId = error ? `${id}-error` : undefined;
   const describedBy = [hintId, errorId].filter(Boolean).join(" ") || undefined;
   return (
-    <div className={className ?? "grid gap-1.5"}>
+    <div className={className ?? "grid content-start gap-1.5"}>
       <Label htmlFor={id}>
         {label}
         {required && <span aria-hidden="true"> *</span>}

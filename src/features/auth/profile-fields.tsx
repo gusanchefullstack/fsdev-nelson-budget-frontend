@@ -54,7 +54,7 @@ export function ProfileFields({ values, errors, onChange, timezoneHint }: Props)
           />
         )}
       </FormField>
-      <fieldset className="grid grid-cols-[6rem_1fr] gap-2 md:col-span-2">
+      <fieldset className="grid grid-cols-[7.5rem_1fr] gap-2 md:col-span-2">
         <legend className="mb-1.5 text-sm font-medium">Phone number *</legend>
         <FormField id="phoneCountryCode" label="Country code" error={errors.phoneCountryCode}>
           {(a) => (
@@ -86,7 +86,7 @@ export function ProfileFields({ values, errors, onChange, timezoneHint }: Props)
         required
         error={errors.timezone}
         hint={timezoneHint}
-        className="grid gap-1.5 md:col-span-2"
+        className="grid content-start gap-1.5 md:col-span-2"
       >
         {(a) => (
           <TimezoneSelect
