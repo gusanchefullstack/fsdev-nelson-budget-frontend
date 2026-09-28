@@ -77,3 +77,23 @@ test("theme choice persists after reload and on another device (scenario 4)", as
   await expectAccessible(page2);
   await other.close();
 });
+
+test("a signed-in user is sent past the sign-in and sign-up forms", async ({ page }) => {
+  await signUp(page);
+
+  for (const path of ["/sign-in", "/sign-up"]) {
+    await page.goto(path);
+    await expect(page).toHaveURL("/");
+    await expect(page.getByRole("heading", { level: 1 })).toContainText("Welcome");
+  }
+
+  // The sign-in return address is honoured only for pages in the app
+  await page.goto("/sign-in?redirect=/budgets");
+  await expect(page).toHaveURL("/budgets");
+  await page.goto("/sign-in?redirect=//evil.example");
+  await expect(page).toHaveURL("/");
+
+  // Password-reset pages stay reachable while signed in
+  await page.goto("/forgot-password");
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Reset your password");
+});
