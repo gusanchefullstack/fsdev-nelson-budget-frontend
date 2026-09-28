@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, redirect, useNavigate } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,9 +10,16 @@ import { readAuthError } from "@/features/auth/auth-error";
 import { signUpSchema } from "@/features/auth/schemas";
 import { authClient } from "@/lib/auth-client";
 import { useZodForm } from "@/lib/forms";
+import { sessionQuery } from "@/lib/session";
 import { deviceTimezone } from "@/lib/temporal";
 
-export const Route = createFileRoute("/sign-up")({ component: SignUp });
+export const Route = createFileRoute("/sign-up")({
+  // Already signed in: skip the form.
+  beforeLoad: async ({ context }) => {
+    if (await context.queryClient.ensureQueryData(sessionQuery)) throw redirect({ to: "/" });
+  },
+  component: SignUp,
+});
 
 function SignUp() {
   const navigate = useNavigate();
@@ -51,7 +58,8 @@ function SignUp() {
       form.setErrors(fields);
       return setAlert(message);
     }
-    await queryClient.invalidateQueries({ queryKey: ["session"] });
+    // Refetch even if nothing observes it: the guard may have cached "signed out".
+    await queryClient.invalidateQueries({ queryKey: ["session"], refetchType: "all" });
     await navigate({ to: "/" });
   }
 

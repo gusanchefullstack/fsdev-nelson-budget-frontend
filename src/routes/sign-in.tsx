@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, redirect, useNavigate } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
@@ -9,9 +9,18 @@ import { AuthPage, FormAlert } from "@/features/auth/auth-page";
 import { signInSchema } from "@/features/auth/schemas";
 import { signInWithIdentifier } from "@/features/auth/sign-in";
 import { useZodForm } from "@/lib/forms";
+import { sessionQuery } from "@/lib/session";
+
+// Only same-app paths are allowed as redirect targets.
+const safeTarget = (to?: string) => (to?.startsWith("/") && !to.startsWith("//") ? to : "/");
 
 export const Route = createFileRoute("/sign-in")({
   validateSearch: z.object({ redirect: z.string().optional() }),
+  // Already signed in: skip the form.
+  beforeLoad: async ({ context, search }) => {
+    if (await context.queryClient.ensureQueryData(sessionQuery))
+      throw redirect({ to: safeTarget(search.redirect) });
+  },
   component: SignIn,
 });
 
@@ -31,11 +40,9 @@ function SignIn() {
     const error = await signInWithIdentifier(data.identifier, data.password);
     setPending(false);
     if (error) return setAlert(error);
-    await queryClient.invalidateQueries({ queryKey: ["session"] });
-    // Only same-app paths are allowed as redirect targets.
-    await navigate({
-      to: redirect?.startsWith("/") && !redirect.startsWith("//") ? redirect : "/",
-    });
+    // Refetch even if nothing observes it: the guard may have cached "signed out".
+    await queryClient.invalidateQueries({ queryKey: ["session"], refetchType: "all" });
+    await navigate({ to: safeTarget(redirect) });
   }
 
   return (
