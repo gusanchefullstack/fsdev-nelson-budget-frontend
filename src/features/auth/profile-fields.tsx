@@ -2,6 +2,8 @@ import { Input } from "@/components/ui/input";
 import { FormField } from "@/components/form-field";
 import { CountrySelect } from "@/components/country-select";
 import { TimezoneSelect } from "@/components/timezone-select";
+import { PhoneCodeInput } from "@/components/phone-code-input";
+import { dialCodeOf } from "@/lib/countries";
 
 export type ProfileValues = {
   firstName: string;
@@ -50,7 +52,12 @@ export function ProfileFields({ values, errors, onChange, timezoneHint }: Props)
           <CountrySelect
             {...a}
             value={values.country}
-            onChange={(e) => onChange("country", e.target.value)}
+            onChange={(e) => {
+              onChange("country", e.target.value);
+              // Fill the phone code from the country only when it is empty (FR-001a).
+              const dial = dialCodeOf(e.target.value);
+              if (dial && !values.phoneCountryCode.trim()) onChange("phoneCountryCode", dial);
+            }}
           />
         )}
       </FormField>
@@ -58,8 +65,9 @@ export function ProfileFields({ values, errors, onChange, timezoneHint }: Props)
         <legend className="mb-1.5 text-sm font-medium">Phone number *</legend>
         <FormField id="phoneCountryCode" label="Country code" error={errors.phoneCountryCode}>
           {(a) => (
-            <Input
+            <PhoneCodeInput
               {...a}
+              country={values.country}
               inputMode="tel"
               autoComplete="tel-country-code"
               placeholder="+1"

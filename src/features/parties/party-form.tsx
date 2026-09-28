@@ -2,6 +2,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { CountrySelect } from "@/components/country-select";
+import { PhoneCodeInput } from "@/components/phone-code-input";
+import { dialCodeOf } from "@/lib/countries";
 import { FormField } from "@/components/form-field";
 import { NativeSelect } from "@/components/native-select";
 import { useZodForm } from "@/lib/forms";
@@ -168,15 +170,22 @@ export function PartyForm({ collection, party, pending, onSubmit }: Props) {
             <CountrySelect
               {...a}
               value={form.values.country}
-              onChange={(e) => form.set("country")(e.target.value)}
+              onChange={(e) => {
+                form.set("country")(e.target.value);
+                // Fill the phone code from the country only when it is empty (FR-001a).
+                const dial = dialCodeOf(e.target.value);
+                if (dial && !form.values.phoneCountryCode.trim())
+                  form.set("phoneCountryCode")(dial);
+              }}
             />
           )}
         </FormField>
         <div className="grid grid-cols-[6rem_1fr] gap-2">
           <FormField id={id("phone-code")} label="Phone code" error={form.errors.phoneCountryCode}>
             {(a) => (
-              <Input
+              <PhoneCodeInput
                 {...a}
+                country={form.values.country}
                 inputMode="tel"
                 placeholder="+1"
                 value={form.values.phoneCountryCode}
