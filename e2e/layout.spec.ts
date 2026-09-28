@@ -46,3 +46,16 @@ for (const path of ["/sign-in", "/forgot-password", "/reset-password?token=x"]) 
     expect(Math.abs(heading.x - form.x)).toBeLessThanOrEqual(1);
   });
 }
+
+// Theme lives only in the header (auto-saved); "Save profile" is the last control on /profile.
+test("profile page: no theme section, email first, save profile last", async ({ page }) => {
+  await signUp(page);
+  await page.goto("/profile");
+  const main = page.locator("main");
+  await expect(main.getByRole("heading", { name: "Personal details" })).toBeVisible();
+  await expect(main.getByRole("heading", { name: "Theme" })).toHaveCount(0);
+  await expect(main.getByRole("radiogroup", { name: "Theme" })).toHaveCount(0);
+  const headings = await main.getByRole("heading", { level: 2 }).allTextContents();
+  expect(headings).toEqual(["Email", "Personal details"]);
+  await expect(main.getByRole("button").last()).toHaveText("Save profile");
+});

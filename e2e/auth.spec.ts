@@ -78,6 +78,41 @@ test("theme choice persists after reload and on another device (scenario 4)", as
   await other.close();
 });
 
+test("a theme switch sticks while navigating in the app, without a reload (FR-006)", async ({
+  page,
+}) => {
+  await signUp(page);
+  // Main nav is inline on desktop and in the menu sheet on smaller screens
+  const navigate = async (name: string) => {
+    if (page.viewportSize()!.width >= 1024) {
+      await page.getByRole("banner").getByRole("link", { name }).click();
+    } else {
+      await page.getByRole("button", { name: "Open menu" }).click();
+      await page.getByRole("dialog").getByRole("link", { name }).click();
+      await expect(page.getByRole("dialog")).toHaveCount(0);
+    }
+    await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+  };
+  const html = page.locator("html");
+  const banner = page.getByRole("banner");
+
+  for (const [theme, dark] of [
+    ["Dark theme", true],
+    ["Light theme", false],
+  ] as const) {
+    await banner.getByRole("radio", { name: theme }).click();
+    for (const name of ["Budgets", "Accounts", "Dashboard"]) {
+      await navigate(name);
+      if (dark) await expect(html, `${theme} after ${name}`).toHaveClass(/dark/);
+      else await expect(html, `${theme} after ${name}`).not.toHaveClass(/dark/);
+      await expect(banner.getByRole("radio", { name: theme })).toHaveAttribute(
+        "aria-checked",
+        "true",
+      );
+    }
+  }
+});
+
 test("a signed-in user is sent past the sign-in and sign-up forms", async ({ page }) => {
   await signUp(page);
 

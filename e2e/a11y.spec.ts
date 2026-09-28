@@ -79,7 +79,7 @@ test("every signed-in page is accessible in light and dark themes", async ({ pag
   ];
   for (const theme of ["Light theme", "Dark theme"]) {
     await page.goto("/profile");
-    await page.getByRole("main").getByRole("radio", { name: theme }).click();
+    await page.getByRole("banner").getByRole("radio", { name: theme }).click();
     for (const [url, heading] of pages) await check(page, url, heading);
   }
 });
