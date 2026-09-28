@@ -32,13 +32,13 @@ function ResetPassword() {
   }
 
   return (
-    <AuthPage title="Choose a new password">
+    <AuthPage title="Choose a new password" size="narrow">
       {done ? (
         <p role="status">
           Your password was changed. <Link to="/sign-in">Sign in</Link>
         </p>
       ) : (
-        <form onSubmit={submit} noValidate className="grid max-w-sm gap-4">
+        <form onSubmit={submit} noValidate className="grid gap-4">
           <FormAlert message={alert} />
           {alert === INVALID_LINK && <Link to="/forgot-password">Request a new link</Link>}
           <FormField

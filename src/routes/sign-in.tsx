@@ -41,13 +41,14 @@ function SignIn() {
   return (
     <AuthPage
       title="Sign in to Nelson"
+      size="narrow"
       intro={
         <>
           New here? <Link to="/sign-up">Create an account</Link>.
         </>
       }
     >
-      <form onSubmit={submit} noValidate className="grid max-w-sm gap-4">
+      <form onSubmit={submit} noValidate className="grid gap-4">
         <FormAlert message={alert} />
         <FormField
           id="identifier"

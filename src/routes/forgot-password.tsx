@@ -30,7 +30,7 @@ function ForgotPassword() {
   }
 
   return (
-    <AuthPage title="Reset your password">
+    <AuthPage title="Reset your password" size="narrow">
       {sent ? (
         <div role="status" className="grid gap-3">
           <p>
@@ -40,7 +40,7 @@ function ForgotPassword() {
           <Link to="/sign-in">Back to sign in</Link>
         </div>
       ) : (
-        <form onSubmit={submit} noValidate className="grid max-w-sm gap-4">
+        <form onSubmit={submit} noValidate className="grid gap-4">
           <FormAlert message={alert} />
           <FormField id="email" label="Email" required error={form.errors.email}>
             {(a) => (

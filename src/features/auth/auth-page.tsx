@@ -1,16 +1,23 @@
 import type { ReactNode } from "react";
+import { cn } from "@/lib/utils";
 
+/** Centered auth column: narrow for single-column forms, wide for sign-up's two columns. */
 export function AuthPage({
   title,
   intro,
+  size = "wide",
   children,
 }: {
   title: string;
   intro?: ReactNode;
+  size?: "narrow" | "wide";
   children: ReactNode;
 }) {
   return (
-    <section aria-labelledby="auth-title" className="mx-auto grid w-full max-w-2xl gap-6">
+    <section
+      aria-labelledby="auth-title"
+      className={cn("mx-auto grid w-full gap-6", size === "narrow" ? "max-w-sm" : "max-w-2xl")}
+    >
       <div className="grid gap-2">
         <h1 id="auth-title" className="text-2xl font-bold">
           {title}
