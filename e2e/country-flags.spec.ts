@@ -18,7 +18,9 @@ test("country list shows flags after names and keeps type-to-search and plain na
   await expect(country).toHaveValue("CO");
 });
 
-test("sign-up fills the phone code from the country only when it is empty", async ({ page }) => {
+test("sign-up sets the phone code from the country, replacing it or clearing it", async ({
+  page,
+}) => {
   await page.goto("/sign-up");
   const country = page.getByLabel(field("Country"));
   const code = page.getByLabel(field("Country code"));
@@ -29,19 +31,22 @@ test("sign-up fills the phone code from the country only when it is empty", asyn
   await expect(code).toHaveValue("+57");
   await expect(codeFlag).toHaveText(flag("CO"));
 
-  // A code already in the field is never overwritten
+  // Changing the country replaces the code, so flag and number always match
   await country.selectOption("MX");
-  await expect(code).toHaveValue("+57");
+  await expect(code).toHaveValue("+52");
   await expect(codeFlag).toHaveText(flag("MX"));
 
-  // Shared codes, and a country with no code of its own
+  // A typed code stays until the country changes again
+  await code.fill("+99");
+  await expect(code).toHaveValue("+99");
+
+  // Shared codes, and a country with no code of its own clears the field
   for (const [iso, dial] of [
     ["CA", "+1"],
     ["KZ", "+7"],
     ["JE", "+44"],
     ["PN", ""],
   ]) {
-    await code.fill("");
     await country.selectOption(iso);
     await expect(code, iso).toHaveValue(dial);
   }
@@ -52,13 +57,10 @@ test("profile and party forms fill the code and show the flag only with a countr
 }) => {
   await signUp(page);
 
-  // Profile: saved code stays; clearing it lets a new country fill it
+  // Profile: the saved code is kept on load and follows a country change
   await page.goto("/profile");
   const code = page.getByLabel(field("Country code"));
   await expect(code).toHaveValue("+57");
-  await page.getByLabel(field("Country")).selectOption("US");
-  await expect(code).toHaveValue("+57");
-  await code.fill("");
   await page.getByLabel(field("Country")).selectOption("US");
   await expect(code).toHaveValue("+1");
   await expect(page.getByTestId("phone-code-flag")).toHaveText(flag("US"));
@@ -73,4 +75,9 @@ test("profile and party forms fill the code and show the flag only with a countr
   await dialog.getByLabel(field("Country")).selectOption("DE");
   await expect(phoneCode).toHaveValue("+49");
   await expect(dialog.getByTestId("phone-code-flag")).toHaveText(flag("DE"));
+
+  // Back to no country: no code, no flag
+  await dialog.getByLabel(field("Country")).selectOption("");
+  await expect(phoneCode).toHaveValue("");
+  await expect(dialog.getByTestId("phone-code-flag")).toHaveCount(0);
 });
