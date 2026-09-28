@@ -32,3 +32,17 @@ test("profile fields in the same row are aligned", async ({ page }) => {
   await page.goto("/profile");
   await expectProfileRowsAligned(page, page.viewportSize()!.width >= 768);
 });
+
+// Single-column auth pages: heading and form share one column centered in <main>.
+for (const path of ["/sign-in", "/forgot-password", "/reset-password?token=x"]) {
+  test(`${path} form is centered`, async ({ page }) => {
+    await page.goto(path);
+    const main = (await page.locator("main").boundingBox())!;
+    const form = (await page.locator("main form").boundingBox())!;
+    const heading = (await page.locator("main h1").boundingBox())!;
+    const left = form.x - main.x;
+    const right = main.x + main.width - (form.x + form.width);
+    expect(Math.abs(left - right)).toBeLessThanOrEqual(1);
+    expect(Math.abs(heading.x - form.x)).toBeLessThanOrEqual(1);
+  });
+}
