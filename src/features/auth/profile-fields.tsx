@@ -54,9 +54,8 @@ export function ProfileFields({ values, errors, onChange, timezoneHint }: Props)
             value={values.country}
             onChange={(e) => {
               onChange("country", e.target.value);
-              // Fill the phone code from the country only when it is empty (FR-001a).
-              const dial = dialCodeOf(e.target.value);
-              if (dial && !values.phoneCountryCode.trim()) onChange("phoneCountryCode", dial);
+              // The phone code follows the country; blank when it has none (FR-001a).
+              onChange("phoneCountryCode", dialCodeOf(e.target.value) ?? "");
             }}
           />
         )}

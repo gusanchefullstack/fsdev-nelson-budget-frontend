@@ -172,10 +172,8 @@ export function PartyForm({ collection, party, pending, onSubmit }: Props) {
               value={form.values.country}
               onChange={(e) => {
                 form.set("country")(e.target.value);
-                // Fill the phone code from the country only when it is empty (FR-001a).
-                const dial = dialCodeOf(e.target.value);
-                if (dial && !form.values.phoneCountryCode.trim())
-                  form.set("phoneCountryCode")(dial);
+                // The phone code follows the country; blank when it has none (FR-001a).
+                form.set("phoneCountryCode")(dialCodeOf(e.target.value) ?? "");
               }}
             />
           )}
