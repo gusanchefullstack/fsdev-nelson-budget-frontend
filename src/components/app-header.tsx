@@ -9,6 +9,8 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { authClient } from "@/lib/auth-client";
 import { sessionQuery } from "@/lib/session";
 import { saveThemePreference } from "@/features/profile/theme-sync";
+import logo from "@/assets/nelson-logo.png";
+import logoDark from "@/assets/nelson-logo-dark.png";
 
 export function AppHeader() {
   const { data: session } = useQuery(sessionQuery);
@@ -26,7 +28,13 @@ export function AppHeader() {
   return (
     <header className="border-b bg-background">
       <div className="mx-auto flex max-w-6xl items-center gap-3 px-4 py-3">
-        <Link to="/" className="text-lg font-bold text-foreground no-underline">
+        <Link
+          to="/"
+          className="flex items-center gap-2 text-lg font-bold text-foreground no-underline"
+        >
+          {/* Decorative: the link text names the app. Dark variant adds a light wing edge. */}
+          <img src={logo} alt="" width={28} height={28} className="dark:hidden" />
+          <img src={logoDark} alt="" width={28} height={28} className="hidden dark:block" />
           Nelson
         </Link>
         {session && (
