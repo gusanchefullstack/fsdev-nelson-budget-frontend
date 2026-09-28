@@ -43,7 +43,9 @@ export function AppHeader() {
           </nav>
         )}
         <div className="ml-auto flex items-center gap-2">
-          <ThemeToggle onChange={session ? saveThemePreference : undefined} />
+          <ThemeToggle
+            onChange={session ? (pref) => saveThemePreference(queryClient, pref) : undefined}
+          />
           {session && (
             <>
               <Button variant="outline" className="hidden lg:inline-flex" onClick={signOut}>

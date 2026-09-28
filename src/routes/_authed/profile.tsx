@@ -6,12 +6,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { FormField } from "@/components/form-field";
 import { LoadingState } from "@/components/page-states";
-import { ThemeToggle } from "@/components/theme-toggle";
 import { ProfileFields, type ProfileValues } from "@/features/auth/profile-fields";
 import { readAuthError } from "@/features/auth/auth-error";
 import { emailSchema, profileSchema } from "@/features/auth/schemas";
 import { profileQuery, useUpdateProfile, type Profile } from "@/features/profile/api";
-import { saveThemePreference } from "@/features/profile/theme-sync";
 import { authClient } from "@/lib/auth-client";
 import { errorMessage } from "@/lib/error-messages";
 import { useZodForm } from "@/lib/forms";
@@ -34,14 +32,8 @@ function ProfilePage() {
           Signed in as <strong>{profile.username}</strong> (your username can't be changed).
         </p>
       </div>
-      <ProfileForm profile={profile} />
       <EmailForm email={profile.email} />
-      <section aria-labelledby="theme-title" className="grid gap-2">
-        <h2 id="theme-title" className="text-lg font-semibold">
-          Theme
-        </h2>
-        <ThemeToggle onChange={saveThemePreference} />
-      </section>
+      <ProfileForm profile={profile} />
     </section>
   );
 }
