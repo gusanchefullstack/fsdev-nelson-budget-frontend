@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { initialCollapsed } from "@/features/budgets/review-tree/review-layout";
@@ -37,6 +37,17 @@ function budget(net: string, expenseCategories = 4, itemsPerCategory = 1): Revie
 
 // Intl puts a no-break space after the currency code
 const text = (el: Element) => (el.textContent ?? "").replace(/ /g, " ");
+
+// jsdom has no layout; give the tree box a desktop size (768×520)
+const box = Object.getOwnPropertyDescriptors(HTMLElement.prototype);
+beforeAll(() => {
+  Object.defineProperty(HTMLElement.prototype, "clientWidth", { configurable: true, value: 768 });
+  Object.defineProperty(HTMLElement.prototype, "clientHeight", { configurable: true, value: 520 });
+});
+afterAll(() => {
+  Object.defineProperty(HTMLElement.prototype, "clientWidth", box.clientWidth!);
+  Object.defineProperty(HTMLElement.prototype, "clientHeight", box.clientHeight!);
+});
 
 describe("ReviewTree", () => {
   it("renders every level with totals, including an empty category, and no frequencies", () => {
@@ -105,11 +116,17 @@ describe("ReviewTree", () => {
   });
 
   it("starts collapsed only when the full tree would be unreadable (FR-013)", () => {
-    const phone = { width: 375, height: 420 };
-    expect(initialCollapsed(budget("0.00"), phone)).toEqual(new Set());
-    const wide = initialCollapsed(budget("0.00", 4, 10), phone);
-    expect(wide).toEqual(new Set(["savings", "c0", "c1", "c2", "c3"]));
-    const many = initialCollapsed(budget("0.00", 40, 1), phone);
+    const desktop = { width: 768, height: 520 };
+    const phone = { width: 343, height: 420 };
+    // Owner's example: 5 categories, 4 items
+    expect(initialCollapsed(budget("0.00"), desktop)).toEqual(new Set());
+    expect(initialCollapsed(budget("0.00"), phone)).toEqual(
+      new Set(["savings", "c0", "c1", "c2", "c3", "INCOME", "EXPENSE"]),
+    );
+    expect(initialCollapsed(budget("0.00", 4, 10), desktop)).toEqual(
+      new Set(["savings", "c0", "c1", "c2", "c3"]),
+    );
+    const many = initialCollapsed(budget("0.00", 40, 1), desktop);
     expect(many.has("INCOME") && many.has("EXPENSE") && many.has("c39")).toBe(true);
   });
 

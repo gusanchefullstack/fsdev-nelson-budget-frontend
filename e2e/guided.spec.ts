@@ -1,4 +1,4 @@
-import type { Page } from "@playwright/test";
+import type { Locator, Page } from "@playwright/test";
 import { expectAccessible, expectNoHorizontalScroll } from "./helpers/a11y";
 import { expect, field, signUp, test } from "./fixtures";
 
@@ -17,6 +17,13 @@ async function addDraftItem(
   await dialog.getByLabel(field("First expected date")).fill(first);
   await dialog.getByRole("button", { name: "Add item" }).click();
   await expect(page.getByRole("dialog")).toHaveCount(0);
+}
+
+// On phones the review tree starts collapsed (FR-013); open every node by keyboard, since
+// newly shown nodes may sit outside the clipped tree box
+async function expandTree(tree: Locator) {
+  const closed = tree.locator('[aria-expanded="false"]');
+  while ((await closed.count()) > 0) await closed.first().press("Enter");
 }
 
 async function addDraftCategory(page: Page, type: "income" | "expense", name: string) {
@@ -67,6 +74,7 @@ test("guided creation is all-or-nothing and keeps the draft after a failure (sce
   await expect(tree.getByRole("img", { name: /^Net balance, USD\s38,820\.00$/ })).toBeVisible();
   await expect(tree.getByRole("button", { name: /^Incomes, USD\s99,500\.00$/ })).toBeVisible();
   await expect(tree.getByRole("button", { name: /^Expenses, USD\s60,680\.00$/ })).toBeVisible();
+  await expandTree(tree);
   await expect(tree.getByRole("img", { name: /^Gym, USD\s440\.00$/ })).toBeAttached();
   await expect(page.locator("#review-summary")).toHaveText(
     /^Plan 2027: planned income USD\s99,500\.00, planned expenses USD\s60,680\.00, net balance USD\s38,820\.00\. 1 income category and 2 expense categories with 5 items\.$/,
@@ -120,8 +128,10 @@ test("guided creation is all-or-nothing and keeps the draft after a failure (sce
   await expect(page.getByRole("alert")).toContainText(
     "Nothing was saved and your entries are kept",
   );
-  // Entries are kept (on phones the six-item tree starts with categories collapsed, FR-013)
+  // Entries are kept
+  await expandTree(tree);
   await expect(tree.getByRole("button", { name: /^Subscriptions, USD\s800\.00$/ })).toBeVisible();
+  await expect(tree.getByRole("img", { name: /^Gym,/ })).toBeAttached();
 
   await page.unroute("**/api/v1/budgets");
   await page.getByRole("button", { name: "Try again" }).click();

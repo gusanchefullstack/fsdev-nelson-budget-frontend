@@ -6,7 +6,8 @@ export const NODE_H = 52;
 const GAP_X = 16;
 const GAP_Y = 44;
 const PAD = 16;
-export const MIN_SCALE = 0.3; // below this node text is unreadable
+export const READABLE_SCALE = 0.7; // first view never starts smaller (owner review, T029)
+export const MIN_SCALE = 0.2;
 export const MAX_SCALE = 2.5;
 export const CHAR_W = 7.3; // Roboto Mono at 12px
 
@@ -51,12 +52,12 @@ export function fitTransform(b: Bounds, size: Size): ZoomTransform {
 
 /**
  * Readable first view (FR-013): collapse categories, then groups, until the tree fits the box
- * at MIN_SCALE or more.
+ * at READABLE_SCALE or more.
  */
 export function initialCollapsed(root: ReviewTreeNode, size: Size): Set<string> {
   const none = new Set<string>();
-  if (fitScale(layout(root, none).bounds, size) >= MIN_SCALE) return none;
+  if (fitScale(layout(root, none).bounds, size) >= READABLE_SCALE) return none;
   const categories = new Set(root.children.flatMap((g) => g.children.map((c) => c.id)));
-  if (fitScale(layout(root, categories).bounds, size) >= MIN_SCALE) return categories;
+  if (fitScale(layout(root, categories).bounds, size) >= READABLE_SCALE) return categories;
   return new Set([...categories, ...root.children.map((g) => g.id)]);
 }

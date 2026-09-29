@@ -69,7 +69,7 @@ export function ReviewTree({ root, currency, summaryId }: Props) {
         [0, 0],
         [el.clientWidth || 320, el.clientHeight || 420],
       ])
-      .scaleExtent([MIN_SCALE / 3, MAX_SCALE])
+      .scaleExtent([MIN_SCALE, MAX_SCALE])
       // A plain wheel scrolls the page; Ctrl/⌘ + wheel (and trackpad pinch) zooms.
       .filter((e: Event) =>
         e.type === "wheel"
@@ -83,13 +83,15 @@ export function ReviewTree({ root, currency, summaryId }: Props) {
 
   const zoomBy = (k: number) => svg.current && select(svg.current).call(behavior.scaleBy, k);
 
-  const toggle = (id: string) =>
+  const toggle = (id: string) => {
+    setTip(null); // a tap leaves the tooltip open over the newly shown nodes
     setCollapsed((prev) => {
       const next = new Set(prev);
       if (next.has(id)) next.delete(id);
       else next.add(id);
       return next;
     });
+  };
 
   const onKey = (e: KeyboardEvent, id: string) => {
     if (e.key === "Enter" || e.key === " ") {
