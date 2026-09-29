@@ -91,6 +91,36 @@ export function useCreateBudget() {
   });
 }
 
+export type Notice = { code: string; message: string };
+export type PreviewItem = { name: string; plannedTotal: string; occurrences: number };
+export type PreviewCategory = {
+  type: CategoryType;
+  name: string;
+  plannedTotal: string;
+  items: PreviewItem[];
+};
+export type BudgetPreview = {
+  currency: Currency;
+  plannedIncome: string;
+  plannedExpense: string;
+  plannedNet: string;
+  categories: PreviewCategory[];
+  notices: Notice[];
+};
+
+/** Planned totals of an unsaved draft; refetched on every visit so they match the draft (FR-007). */
+export const budgetPreviewQuery = (payload: NestedBudgetInput) =>
+  queryOptions({
+    queryKey: ["budget-preview", payload],
+    queryFn: () =>
+      api<One<BudgetPreview>>("/budget-previews", { method: "POST", body: payload }).then(
+        (r) => r.data,
+      ),
+    staleTime: 0,
+    gcTime: 0,
+    retry: false,
+  });
+
 export function useUpdateBudget(id: string) {
   const invalidate = useInvalidateBudgetData();
   return useMutation({
