@@ -62,6 +62,50 @@ test("guided creation is all-or-nothing and keeps the draft after a failure (sce
   await expectNoHorizontalScroll(page);
   await page.getByRole("button", { name: "Next" }).click();
 
+  // Review: planned totals tree (spec 003). Income 12×8000 + 7×500; expenses 12×5000 + 12×20 + 11×40
+  const tree = page.getByRole("group", { name: "Budget tree" });
+  await expect(tree.getByRole("img", { name: /^Net balance, USD\s38,820\.00$/ })).toBeVisible();
+  await expect(tree.getByRole("button", { name: /^Incomes, USD\s99,500\.00$/ })).toBeVisible();
+  await expect(tree.getByRole("button", { name: /^Expenses, USD\s60,680\.00$/ })).toBeVisible();
+  await expect(tree.getByRole("img", { name: /^Gym, USD\s440\.00$/ })).toBeAttached();
+  await expect(page.locator("#review-summary")).toHaveText(
+    /^Plan 2027: planned income USD\s99,500\.00, planned expenses USD\s60,680\.00, net balance USD\s38,820\.00\. 1 income category and 2 expense categories with 5 items\.$/,
+  );
+  await expect(page.getByText(/Salary · Monthly/)).toHaveCount(0);
+  await expectAccessible(page);
+  await expectNoHorizontalScroll(page);
+
+  // Keyboard: collapse and expand a group, zoom and reset (FR-010–FR-012)
+  const expenses = tree.getByRole("button", { name: /^Expenses/ });
+  await expenses.focus();
+  await page.keyboard.press("Enter");
+  await expect(expenses).toHaveAttribute("aria-expanded", "false");
+  await expect(tree.getByRole("button", { name: /^Housing/ })).toHaveCount(0);
+  await page.keyboard.press("Enter");
+  await expect(tree.getByRole("button", { name: /^Housing/ })).toBeVisible();
+  await page.getByRole("button", { name: "Zoom in" }).press("Enter");
+  await page.getByRole("button", { name: "Reset view" }).press("Enter");
+
+  // Dark theme keeps the tree accessible and inside the page width
+  await page.getByRole("banner").getByRole("radio", { name: "Dark theme" }).click();
+  // Buttons animate color changes, so wait for the final lime before scanning
+  await expect
+    .poll(() =>
+      page
+        .getByRole("button", { name: "Create budget" })
+        .evaluate((el) => getComputedStyle(el).backgroundColor),
+    )
+    .toBe("rgb(192, 242, 10)");
+  await expectAccessible(page);
+  await expectNoHorizontalScroll(page);
+
+  // Back, add an item, return: totals are recalculated (FR-007)
+  await page.getByRole("button", { name: "Back" }).click();
+  await addDraftItem(page, "Subscriptions", "Parking", "10", "2027-01-10");
+  await page.getByRole("button", { name: "Next" }).click();
+  await expect(tree.getByRole("button", { name: /^Expenses, USD\s60,800\.00$/ })).toBeVisible();
+  await expect(page.locator("#review-summary")).toContainText("with 6 items.");
+
   // Force a server failure on save
   await page.route("**/api/v1/budgets", (route) =>
     route.request().method() === "POST"
@@ -76,7 +120,8 @@ test("guided creation is all-or-nothing and keeps the draft after a failure (sce
   await expect(page.getByRole("alert")).toContainText(
     "Nothing was saved and your entries are kept",
   );
-  await expect(page.getByText("Gym")).toBeVisible();
+  // Entries are kept (on phones the six-item tree starts with categories collapsed, FR-013)
+  await expect(tree.getByRole("button", { name: /^Subscriptions, USD\s800\.00$/ })).toBeVisible();
 
   await page.unroute("**/api/v1/budgets");
   await page.getByRole("button", { name: "Try again" }).click();
