@@ -1,4 +1,5 @@
 import type { Page } from "@playwright/test";
+import { expectAccessible, expectNoHorizontalScroll } from "./helpers/a11y";
 import {
   addCategory,
   addItem,
@@ -111,4 +112,60 @@ test("overview shows estimated vs actual and status per row (US1)", async ({ pag
   await page.goto(budgetUrl);
   await expect(row(page, "Water")).toContainText(/Actual USD\s155\.00/);
   await expect(row(page, "Water").locator("[data-status]")).toHaveText("Over");
+});
+
+// 50 items per side, seeded through the nested create API (the same request Guided sends)
+function largeBudget() {
+  const side = (type: "INCOME" | "EXPENSE", label: string) =>
+    Array.from({ length: 5 }, (_, c) => ({
+      type,
+      name: `${label} category ${c + 1} with a long descriptive name`,
+      items: Array.from({ length: 10 }, (_, i) => ({
+        name: `${label} ${c + 1}.${i + 1} item with a rather long name to wrap`,
+        description: "Seeded",
+        estimatedAmount: "1234567.89",
+        firstExpectedDate: "2025-01-15",
+        frequency: "MONTHLY",
+      })),
+    }));
+  return {
+    name: "Large 2025",
+    currency: "USD",
+    startDate: "2025-01-01",
+    endDate: "2025-12-31",
+    categories: [...side("INCOME", "Income"), ...side("EXPENSE", "Expense")],
+  };
+}
+
+test("overview stays readable with 50 items per side (US2)", async ({ page, baseURL }) => {
+  test.setTimeout(180_000);
+  await signUp(page);
+  const res = await page.request.post("/api/v1/budgets", {
+    data: largeBudget(),
+    headers: { Origin: new URL(baseURL!).origin },
+  });
+  expect(res.status()).toBe(201);
+  const { data } = await res.json();
+  await page.goto(`/budgets/${data.id}`);
+
+  const region = overview(page);
+  const toggles = region.getByRole("button", { name: /category \d with a long descriptive name$/ });
+  await expect(toggles).toHaveCount(10);
+  for (const t of await toggles.all()) await expect(t).toHaveAttribute("aria-expanded", "false");
+  await expect(region.getByText(/item with a rather long name to wrap$/)).toHaveCount(0);
+
+  for (const theme of ["Light theme", "Dark theme"]) {
+    await page.getByRole("banner").getByRole("radio", { name: theme }).click();
+    for (const t of await toggles.all()) {
+      await t.press("Enter");
+      await expect(t).toHaveAttribute("aria-expanded", "true");
+    }
+    await expect(region.getByText(/item with a rather long name to wrap$/)).toHaveCount(100);
+    await expectNoHorizontalScroll(page);
+    await expectAccessible(page);
+    for (const t of await toggles.all()) {
+      await t.press("Enter");
+      await expect(t).toHaveAttribute("aria-expanded", "false");
+    }
+  }
 });
