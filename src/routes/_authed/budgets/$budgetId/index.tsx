@@ -18,6 +18,7 @@ import { FormDialog } from "@/components/form-dialog";
 import { EmptyState, ErrorState, LoadingState } from "@/components/page-states";
 import { BudgetForm } from "@/features/budgets/budget-form";
 import { CategoryDialog } from "@/features/budgets/category-dialog";
+import { BudgetOverview } from "@/features/budgets/overview/budget-overview";
 import {
   budgetQuery,
   useDeleteBudget,
@@ -44,6 +45,7 @@ function BudgetPage() {
   return (
     <article aria-labelledby="budget-title" className="grid gap-8">
       <BudgetHeader budget={data} />
+      <BudgetOverview budget={data} />
       <CategorySection budget={data} type="INCOME" title="Income" />
       <CategorySection budget={data} type="EXPENSE" title="Expenses" />
     </article>
