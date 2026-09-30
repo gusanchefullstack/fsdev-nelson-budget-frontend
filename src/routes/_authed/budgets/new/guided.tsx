@@ -1,14 +1,11 @@
-import { useMemo, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { defineStepper } from "@stepperize/react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { BudgetForm } from "@/features/budgets/budget-form";
-import { budgetPreviewQuery, useCreateBudget, type CategoryType } from "@/features/budgets/api";
-import { reviewSummary, toTreeData } from "@/features/budgets/review-tree/review-summary";
-import { ReviewTree } from "@/features/budgets/review-tree/review-tree";
-import { ApiError } from "@/lib/api";
+import { useCreateBudget, type CategoryType } from "@/features/budgets/api";
+import { ReviewOutline } from "@/features/budgets/review-outline";
 import {
   AddDraftCategory,
   AddDraftItem,
@@ -153,67 +150,6 @@ function ItemsStep({ type }: { type: CategoryType }) {
   );
 }
 
-/** Planned-totals tree from the read-only preview, recalculated on every visit (spec 003). */
-function PlannedTotals() {
-  const { info, categories } = useBudgetDraft();
-  const payload = useMemo(() => draftPayload(info, categories), [info, categories]);
-  const preview = useQuery(budgetPreviewQuery(payload));
-  const data = preview.data;
-  const root = useMemo(() => data && toTreeData(categories, data), [categories, data]);
-
-  if (preview.isError) {
-    const fixable =
-      preview.error instanceof ApiError &&
-      (preview.error.code === "VALIDATION_ERROR" || preview.error.code === "CONFLICT");
-    return (
-      <div
-        role="alert"
-        className="grid justify-items-start gap-2 rounded-md border border-destructive/50 px-3 py-2 text-destructive"
-      >
-        <p>
-          {errorMessage(preview.error)}
-          {fixable ? " Go Back to fix it." : " Your entries are kept."}
-        </p>
-        {!fixable && (
-          <Button variant="outline" size="sm" onClick={() => void preview.refetch()}>
-            Retry
-          </Button>
-        )}
-      </div>
-    );
-  }
-  if (!data || !root) {
-    return (
-      <div
-        aria-busy="true"
-        className="grid h-[420px] place-items-center rounded-lg border bg-muted text-muted-foreground md:h-[520px]"
-      >
-        Calculating planned totals…
-      </div>
-    );
-  }
-  return (
-    <>
-      {data.notices.length > 0 && (
-        <ul role="status" className="grid gap-1 text-sm">
-          {data.notices.map((n) => (
-            <li key={n.message}>{n.message}</li>
-          ))}
-        </ul>
-      )}
-      <ReviewTree
-        key={preview.dataUpdatedAt}
-        root={root}
-        currency={info.currency}
-        summaryId="review-summary"
-      />
-      <p id="review-summary" className="sr-only">
-        {reviewSummary(info, categories, data)}
-      </p>
-    </>
-  );
-}
-
 function ReviewStep() {
   const { info, categories, reset } = useBudgetDraft();
   const create = useCreateBudget();
@@ -226,7 +162,7 @@ function ReviewStep() {
       onSuccess: ({ data, notices }) => {
         notices?.forEach((n) => toast.info(n.message));
         toast.success("Budget created.");
-        // Clear the draft after leaving, so the review doesn't re-preview an empty draft
+        // Clear the draft after leaving, so Review never flashes an empty draft
         void navigate({ to: "/budgets/$budgetId", params: { budgetId: data.id } }).then(reset);
       },
       // All-or-nothing: nothing was saved, and the draft is kept for a retry.
@@ -240,7 +176,7 @@ function ReviewStep() {
         <strong>{info.name}</strong> · {info.currency} · {formatDate(info.startDate)} –{" "}
         {formatDate(info.endDate)}
       </p>
-      <PlannedTotals />
+      <ReviewOutline />
       {failure && (
         <p
           role="alert"
