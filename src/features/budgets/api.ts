@@ -21,16 +21,23 @@ export type Budget = Totals & {
   endDate: string;
 };
 
+/** Spec 004: execution figures on the budget detail (amounts in the budget's currency). */
+export type Figures = { estimatedTotal: string; estimatedToDate: string; actual: string };
+export type DetailItem = Item & { figures: Figures };
+
 export type Category = {
   id: string;
   type: CategoryType;
   name: string;
   description: string | null;
   counts: { items: number; transactions: number };
-  items: Item[];
+  figures: Figures;
+  items: DetailItem[];
 };
 
 export type BudgetDetail = Budget & {
+  estimatedIncomeTotal: string;
+  estimatedExpenseTotal: string;
   counts: { categories: number; items: number; transactions: number };
   categories: Category[];
 };
