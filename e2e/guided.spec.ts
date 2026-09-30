@@ -1,4 +1,4 @@
-import type { Locator, Page } from "@playwright/test";
+import type { Page } from "@playwright/test";
 import { expectAccessible, expectNoHorizontalScroll } from "./helpers/a11y";
 import { expect, field, signUp, test } from "./fixtures";
 
@@ -17,13 +17,6 @@ async function addDraftItem(
   await dialog.getByLabel(field("First expected date")).fill(first);
   await dialog.getByRole("button", { name: "Add item" }).click();
   await expect(page.getByRole("dialog")).toHaveCount(0);
-}
-
-// On phones the review tree starts collapsed (FR-013); open every node by keyboard, since
-// newly shown nodes may sit outside the clipped tree box
-async function expandTree(tree: Locator) {
-  const closed = tree.locator('[aria-expanded="false"]');
-  while ((await closed.count()) > 0) await closed.first().press("Enter");
 }
 
 async function addDraftCategory(page: Page, type: "income" | "expense", name: string) {
@@ -55,6 +48,7 @@ test("guided creation is all-or-nothing and keeps the draft after a failure (sce
 
   await addDraftCategory(page, "expense", "Housing");
   await addDraftCategory(page, "expense", "Subscriptions");
+  await addDraftCategory(page, "expense", "Travel");
   // Back keeps what was entered
   await page.getByRole("button", { name: "Back" }).click();
   await expect(page.getByText(/Salary · Monthly · USD\s8,000\.00/)).toBeVisible();
@@ -69,32 +63,26 @@ test("guided creation is all-or-nothing and keeps the draft after a failure (sce
   await expectNoHorizontalScroll(page);
   await page.getByRole("button", { name: "Next" }).click();
 
-  // Review: planned totals tree (spec 003). Income 12×8000 + 7×500; expenses 12×5000 + 12×20 + 11×40
-  const tree = page.getByRole("group", { name: "Budget tree" });
-  await expect(tree.getByRole("img", { name: /^Net balance, USD\s38,820\.00$/ })).toBeVisible();
-  await expect(tree.getByRole("button", { name: /^Incomes, USD\s99,500\.00$/ })).toBeVisible();
-  await expect(tree.getByRole("button", { name: /^Expenses, USD\s60,680\.00$/ })).toBeVisible();
-  await expandTree(tree);
-  await expect(tree.getByRole("img", { name: /^Gym, USD\s440\.00$/ })).toBeAttached();
-  await expect(page.locator("#review-summary")).toHaveText(
-    /^Plan 2027: planned income USD\s99,500\.00, planned expenses USD\s60,680\.00, net balance USD\s38,820\.00\. 1 income category and 2 expense categories with 5 items\.$/,
-  );
-  await expect(page.getByText(/Salary · Monthly/)).toHaveCount(0);
+  // Review: an outline of the draft, with no totals, tree or zoom (spec 004 FR-016, FR-017)
+  const income = page.getByRole("region", { name: "Income" });
+  const expenses = page.getByRole("region", { name: "Expenses" });
+  await expect(income.getByRole("heading", { name: "Income", level: 3 })).toBeVisible();
+  await expect(expenses.getByRole("heading", { name: "Expenses", level: 3 })).toBeVisible();
+  await expect(income.getByRole("heading", { name: "Salaries", level: 4 })).toBeVisible();
+  await expect(income.getByText(/^Salary · Monthly · USD\s8,000\.00$/)).toBeVisible();
+  await expect(income.getByText(/^Bonus · Monthly · USD\s500\.00$/)).toBeVisible();
+  await expect(expenses.getByText(/^Gym · Monthly · USD\s40\.00$/)).toBeVisible();
+  const travel = expenses.getByRole("listitem").filter({
+    has: page.getByRole("heading", { name: "Travel", level: 4 }),
+  });
+  await expect(travel).toContainText("No items");
+  await expect(page.getByRole("button", { name: "Zoom in" })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Reset view" })).toHaveCount(0);
+  await expect(page.getByText(/planned|net balance/i)).toHaveCount(0);
   await expectAccessible(page);
   await expectNoHorizontalScroll(page);
 
-  // Keyboard: collapse and expand a group, zoom and reset (FR-010–FR-012)
-  const expenses = tree.getByRole("button", { name: /^Expenses/ });
-  await expenses.focus();
-  await page.keyboard.press("Enter");
-  await expect(expenses).toHaveAttribute("aria-expanded", "false");
-  await expect(tree.getByRole("button", { name: /^Housing/ })).toHaveCount(0);
-  await page.keyboard.press("Enter");
-  await expect(tree.getByRole("button", { name: /^Housing/ })).toBeVisible();
-  await page.getByRole("button", { name: "Zoom in" }).press("Enter");
-  await page.getByRole("button", { name: "Reset view" }).press("Enter");
-
-  // Dark theme keeps the tree accessible and inside the page width
+  // Dark theme keeps the outline accessible and inside the page width
   await page.getByRole("banner").getByRole("radio", { name: "Dark theme" }).click();
   // Buttons animate color changes, so wait for the final lime before scanning
   await expect
@@ -107,12 +95,11 @@ test("guided creation is all-or-nothing and keeps the draft after a failure (sce
   await expectAccessible(page);
   await expectNoHorizontalScroll(page);
 
-  // Back, add an item, return: totals are recalculated (FR-007)
+  // Back, add an item, return: the outline shows it (FR-019)
   await page.getByRole("button", { name: "Back" }).click();
   await addDraftItem(page, "Subscriptions", "Parking", "10", "2027-01-10");
   await page.getByRole("button", { name: "Next" }).click();
-  await expect(tree.getByRole("button", { name: /^Expenses, USD\s60,800\.00$/ })).toBeVisible();
-  await expect(page.locator("#review-summary")).toContainText("with 6 items.");
+  await expect(expenses.getByText(/^Parking · Monthly · USD\s10\.00$/)).toBeVisible();
 
   // Force a server failure on save
   await page.route("**/api/v1/budgets", (route) =>
@@ -129,14 +116,64 @@ test("guided creation is all-or-nothing and keeps the draft after a failure (sce
     "Nothing was saved and your entries are kept",
   );
   // Entries are kept
-  await expandTree(tree);
-  await expect(tree.getByRole("button", { name: /^Subscriptions, USD\s800\.00$/ })).toBeVisible();
-  await expect(tree.getByRole("img", { name: /^Gym,/ })).toBeAttached();
+  await expect(expenses.getByText(/^Gym · Monthly · USD\s40\.00$/)).toBeVisible();
+  await expect(expenses.getByText(/^Parking · Monthly/)).toBeVisible();
 
   await page.unroute("**/api/v1/budgets");
   await page.getByRole("button", { name: "Try again" }).click();
   await expect(page.getByRole("heading", { name: "Plan 2027", level: 1 })).toBeVisible();
-  for (const name of ["Salary", "Bonus", "Rent", "Netflix", "Gym"]) {
+  for (const name of ["Salary", "Bonus", "Rent", "Netflix", "Gym", "Parking"]) {
     await expect(page.getByRole("link", { name, exact: true })).toBeVisible();
   }
+});
+
+test("Review stays readable with 50 items per side (SC-001, SC-004)", async ({ page }) => {
+  test.setTimeout(600_000);
+  await signUp(page);
+  await page.goto("/budgets/new/guided");
+  await page.getByLabel(field("Name")).fill("Big 2027");
+  await page.getByLabel(field("Start date")).fill("2027-01-01");
+  await page.getByLabel(field("End date")).fill("2027-12-31");
+  await page.getByRole("button", { name: "Next" }).click();
+
+  const sides = [
+    ["income", "Income"],
+    ["expense", "Expense"],
+  ] as const;
+  for (const [type, label] of sides) {
+    for (let c = 1; c <= 5; c++) await addDraftCategory(page, type, `${label} group ${c}`);
+    await page.getByRole("button", { name: "Next" }).click();
+    for (let c = 1; c <= 5; c++) {
+      for (let i = 1; i <= 10; i++) {
+        await addDraftItem(
+          page,
+          `${label} group ${c}`,
+          `${label} ${c}.${i}`,
+          "125.5",
+          "2027-01-15",
+        );
+      }
+    }
+    await page.getByRole("button", { name: "Next" }).click();
+  }
+
+  await expect(page.getByRole("heading", { name: /Step 6 of 6: Review/ })).toBeVisible();
+  for (const last of ["Income 5.10", "Expense 5.10"]) {
+    const line = page.getByText(new RegExp(`^${last.replace(".", "\\.")} · Monthly`));
+    await line.scrollIntoViewIfNeeded();
+    await expect(line).toBeVisible();
+  }
+  await expect(page.getByText(/ · Monthly · USD\s125\.50$/)).toHaveCount(100);
+  await expectNoHorizontalScroll(page);
+  await expectAccessible(page);
+  await page.getByRole("banner").getByRole("radio", { name: "Dark theme" }).click();
+  await expect
+    .poll(() =>
+      page
+        .getByRole("button", { name: "Create budget" })
+        .evaluate((el) => getComputedStyle(el).backgroundColor),
+    )
+    .toBe("rgb(192, 242, 10)");
+  await expectNoHorizontalScroll(page);
+  await expectAccessible(page);
 });
