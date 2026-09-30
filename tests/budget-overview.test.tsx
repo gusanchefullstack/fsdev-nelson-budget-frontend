@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { BudgetOverview } from "@/features/budgets/overview/budget-overview";
-import { budgetFixture } from "./overview-fixture";
+import { budgetFixture, category, detailItem } from "./overview-fixture";
 
 const row = (name: string) =>
   screen.getByText(name, { selector: "[data-row-name]" }).closest("li")!;
@@ -67,5 +67,33 @@ describe("US1 — budget overview", () => {
     render(<BudgetOverview budget={budgetFixture([])} />);
     expect(screen.getByText("Nothing to show yet")).toBeInTheDocument();
     expect(screen.getByText("Add items to see how this budget is going.")).toBeInTheDocument();
+  });
+});
+
+const many = (n: number) =>
+  budgetFixture([
+    category(
+      "Bills",
+      "EXPENSE",
+      Array.from({ length: n }, (_, i) =>
+        detailItem(`Bill ${i + 1}`, "EXPENSE", ["10.00", "10.00", "10.00"]),
+      ),
+    ),
+  ]);
+
+describe("US2 — first view by size", () => {
+  it("starts with categories collapsed above 10 items", () => {
+    render(<BudgetOverview budget={many(11)} />);
+    expect(screen.getByRole("button", { name: "Bills" })).toHaveAttribute("aria-expanded", "false");
+    expect(screen.getByRole("button", { name: "Expenses" })).toHaveAttribute(
+      "aria-expanded",
+      "true",
+    );
+    expect(screen.queryByText("Bill 1", { selector: "[data-row-name]" })).toBeNull();
+  });
+
+  it("starts expanded with 10 items", () => {
+    render(<BudgetOverview budget={many(10)} />);
+    expect(screen.getByText("Bill 10", { selector: "[data-row-name]" })).toBeInTheDocument();
   });
 });

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { status, toOverview } from "@/features/budgets/overview/overview-model";
+import { initialCollapsed, status, toOverview } from "@/features/budgets/overview/overview-model";
 import { budgetFixture, category, detailItem } from "./overview-fixture";
 
 describe("status (FR-006, FR-008: ±10% of the estimate to date)", () => {
@@ -92,5 +92,33 @@ describe("toOverview", () => {
       exceeded: true,
       status: "over",
     });
+  });
+});
+
+const items = (n: number, prefix: string) =>
+  Array.from({ length: n }, (_, i) =>
+    detailItem(`${prefix}${i + 1}`, "EXPENSE", ["10.00", "10.00", "10.00"]),
+  );
+
+describe("initialCollapsed (FR-012)", () => {
+  it("collapses categories with items when there are more than 10 items", () => {
+    const root = toOverview(
+      budgetFixture([
+        category("A", "EXPENSE", items(6, "a")),
+        category("B", "EXPENSE", items(5, "b")),
+        category("Empty", "EXPENSE", []),
+      ]),
+    );
+    expect(initialCollapsed(root)).toEqual(new Set(["A", "B"]));
+  });
+
+  it("starts fully expanded with 10 items or fewer", () => {
+    const root = toOverview(
+      budgetFixture([
+        category("A", "EXPENSE", items(5, "a")),
+        category("B", "EXPENSE", items(5, "b")),
+      ]),
+    );
+    expect(initialCollapsed(root).size).toBe(0);
   });
 });

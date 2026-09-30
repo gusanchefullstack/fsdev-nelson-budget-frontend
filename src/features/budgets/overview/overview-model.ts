@@ -96,3 +96,11 @@ export function toOverview(budget: BudgetDetail): OverviewRow {
     children: [group("INCOME"), group("EXPENSE")],
   };
 }
+
+/** FR-012: large budgets (more than 10 items) start with categories collapsed. */
+export function initialCollapsed(root: OverviewRow): Set<string> {
+  const categories = root.children.flatMap((g) => g.children);
+  const items = categories.reduce((n, c) => n + c.children.length, 0);
+  if (items <= 10) return new Set();
+  return new Set(categories.filter((c) => c.children.length > 0).map((c) => c.id));
+}

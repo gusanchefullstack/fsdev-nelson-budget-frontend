@@ -4,7 +4,12 @@ import { EmptyState } from "@/components/page-states";
 import { PositiveMark } from "@/components/positive-mark";
 import type { BudgetDetail } from "@/features/budgets/api";
 import { formatMoney } from "@/lib/temporal";
-import { toOverview, type OverviewRow, type OverviewStatus } from "./overview-model";
+import {
+  initialCollapsed,
+  toOverview,
+  type OverviewRow,
+  type OverviewStatus,
+} from "./overview-model";
 
 /** Money with a true minus sign ("−USD 10.00") so negatives read clearly. */
 function signedMoney(amount: string, currency: string) {
@@ -21,7 +26,7 @@ const STATUS: Record<OverviewStatus, { label: string; Icon: typeof Check }> = {
 /** Estimated vs actual for a budget in use (spec 004 US1, US2). */
 export function BudgetOverview({ budget }: { budget: BudgetDetail }) {
   const root = useMemo(() => toOverview(budget), [budget]);
-  const [collapsed, setCollapsed] = useState<Set<string>>(() => new Set());
+  const [collapsed, setCollapsed] = useState(() => initialCollapsed(root));
 
   const toggle = (id: string) =>
     setCollapsed((prev) => {
